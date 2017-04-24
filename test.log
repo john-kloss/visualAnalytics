@@ -1,0 +1,153 @@
+[1] 25000
+[1] 1
+[1] 1729
+[1] 4769
+[1] 7809
+[1] 10257
+[1] 13274
+[1] 15722
+[1] 17642
+[1] 19694
+[1] 21518
+[1] 24558
+[1] 25000
+[1] 25000
+[1] 25000
+[1] 4
+[1] 4
+[1] 4
+# A tibble: 25,979 × 3
+   home_team_goal away_team_goal league_id
+            <int>          <int>     <int>
+1               1              1         1
+2               0              0         1
+3               0              3         1
+4               5              0         1
+5               1              3         1
+6               1              1         1
+7               2              2         1
+8               1              2         1
+9               1              0         1
+10              4              1         1
+# ... with 25,969 more rows
+function (..., recursive = FALSE)  .Primitive("c")
+# A tibble: 25,979 × 118
+      id country_id league_id    season stage                date match_api_id home_team_api_id
+   <int>      <int>     <int>     <chr> <int>               <chr>        <int>            <int>
+1      1          1         1 2008/2009     1 2008-08-17 00:00:00       492473             9987
+2      2          1         1 2008/2009     1 2008-08-16 00:00:00       492474            10000
+3      3          1         1 2008/2009     1 2008-08-16 00:00:00       492475             9984
+4      4          1         1 2008/2009     1 2008-08-17 00:00:00       492476             9991
+5      5          1         1 2008/2009     1 2008-08-16 00:00:00       492477             7947
+6      6          1         1 2008/2009     1 2008-09-24 00:00:00       492478             8203
+7      7          1         1 2008/2009     1 2008-08-16 00:00:00       492479             9999
+8      8          1         1 2008/2009     1 2008-08-16 00:00:00       492480             4049
+9      9          1         1 2008/2009     1 2008-08-16 00:00:00       492481            10001
+10    10          1         1 2008/2009    10 2008-11-01 00:00:00       492564             8342
+# ... with 25,969 more rows, and 110 more variables: away_team_api_id <int>,
+#   home_team_goal <int>, away_team_goal <int>, home_player_X1 <int>, home_player_X2 <int>,
+#   home_player_X3 <int>, home_player_X4 <int>, home_player_X5 <int>, home_player_X6 <int>,
+#   home_player_X7 <int>, home_player_X8 <int>, home_player_X9 <int>, home_player_X10 <int>,
+#   home_player_X11 <int>, away_player_X1 <int>, away_player_X2 <int>, away_player_X3 <int>,
+#   away_player_X4 <int>, away_player_X5 <int>, away_player_X6 <int>, away_player_X7 <int>,
+#   away_player_X8 <int>, away_player_X9 <int>, away_player_X10 <int>, away_player_X11 <int>,
+#   home_player_Y1 <int>, home_player_Y2 <int>, home_player_Y3 <int>, home_player_Y4 <int>,
+#   home_player_Y5 <int>, home_player_Y6 <int>, home_player_Y7 <int>, home_player_Y8 <int>,
+#   home_player_Y9 <int>, home_player_Y10 <int>, home_player_Y11 <int>, away_player_Y1 <int>,
+#   away_player_Y2 <int>, away_player_Y3 <int>, away_player_Y4 <int>, away_player_Y5 <int>,
+#   away_player_Y6 <int>, away_player_Y7 <int>, away_player_Y8 <int>, away_player_Y9 <int>,
+#   away_player_Y10 <int>, away_player_Y11 <int>, home_player_1 <int>, home_player_2 <int>,
+#   home_player_3 <int>, home_player_4 <int>, home_player_5 <int>, home_player_6 <int>,
+#   home_player_7 <int>, home_player_8 <int>, home_player_9 <int>, home_player_10 <int>,
+#   home_player_11 <int>, away_player_1 <int>, away_player_2 <int>, away_player_3 <int>,
+#   away_player_4 <int>, away_player_5 <int>, away_player_6 <int>, away_player_7 <int>,
+#   away_player_8 <int>, away_player_9 <int>, away_player_10 <int>, away_player_11 <int>,
+#   goal <chr>, shoton <chr>, shotoff <chr>, foulcommit <chr>, card <chr>, cross <chr>,
+#   corner <chr>, possession <chr>, B365H <dbl>, B365D <dbl>, B365A <int>, BWH <dbl>, BWD <dbl>,
+#   BWA <dbl>, IWH <dbl>, IWD <dbl>, IWA <dbl>, LBH <dbl>, LBD <dbl>, LBA <dbl>, PSH <dbl>,
+#   PSD <dbl>, PSA <dbl>, WHH <dbl>, WHD <dbl>, WHA <dbl>, SJH <dbl>, SJD <dbl>, SJA <int>,
+#   VCH <dbl>, VCD <dbl>, ...
+[1] 4
+# A tibble: 25,979 × 3
+   home_team_goal away_team_goal league_id
+            <int>          <int>     <int>
+1               1              1         1
+2               0              0         1
+3               0              3         1
+4               5              0         1
+5               1              3         1
+6               1              1         1
+7               2              2         1
+8               1              2         1
+9               1              0         1
+10              4              1         1
+# ... with 25,969 more rows
+[1] 4
+[1] 4
+[1] 4
+[1] 1
+[1] 1729
+[1] 4769
+[1] 7809
+[1] 10257
+[1] 13274
+[1] 15722
+[1] 17642
+[1] 19694
+[1] 21518
+[1] 21552
+[1] 1
+[1] 1729
+[1] 4769
+[1] 7809
+[1] 10257
+[1] 13274
+[1] 15722
+[1] 17642
+[1] 19694
+[1] 21518
+[1] 24558
+NULL
+NULL
+NULL
+function (x) 
+UseMethod("levels")
+<bytecode: 0x12fd66a0>
+<environment: namespace:base>
+# A tibble: 25,979 × 118
+      id country_id league_id    season stage                date match_api_id home_team_api_id
+   <int>      <int>     <int>     <chr> <int>               <chr>        <int>            <int>
+1      1          1         1 2008/2009     1 2008-08-17 00:00:00       492473             9987
+2      2          1         1 2008/2009     1 2008-08-16 00:00:00       492474            10000
+3      3          1         1 2008/2009     1 2008-08-16 00:00:00       492475             9984
+4      4          1         1 2008/2009     1 2008-08-17 00:00:00       492476             9991
+5      5          1         1 2008/2009     1 2008-08-16 00:00:00       492477             7947
+6      6          1         1 2008/2009     1 2008-09-24 00:00:00       492478             8203
+7      7          1         1 2008/2009     1 2008-08-16 00:00:00       492479             9999
+8      8          1         1 2008/2009     1 2008-08-16 00:00:00       492480             4049
+9      9          1         1 2008/2009     1 2008-08-16 00:00:00       492481            10001
+10    10          1         1 2008/2009    10 2008-11-01 00:00:00       492564             8342
+# ... with 25,969 more rows, and 110 more variables: away_team_api_id <int>,
+#   home_team_goal <int>, away_team_goal <int>, home_player_X1 <int>, home_player_X2 <int>,
+#   home_player_X3 <int>, home_player_X4 <int>, home_player_X5 <int>, home_player_X6 <int>,
+#   home_player_X7 <int>, home_player_X8 <int>, home_player_X9 <int>, home_player_X10 <int>,
+#   home_player_X11 <int>, away_player_X1 <int>, away_player_X2 <int>, away_player_X3 <int>,
+#   away_player_X4 <int>, away_player_X5 <int>, away_player_X6 <int>, away_player_X7 <int>,
+#   away_player_X8 <int>, away_player_X9 <int>, away_player_X10 <int>, away_player_X11 <int>,
+#   home_player_Y1 <int>, home_player_Y2 <int>, home_player_Y3 <int>, home_player_Y4 <int>,
+#   home_player_Y5 <int>, home_player_Y6 <int>, home_player_Y7 <int>, home_player_Y8 <int>,
+#   home_player_Y9 <int>, home_player_Y10 <int>, home_player_Y11 <int>, away_player_Y1 <int>,
+#   away_player_Y2 <int>, away_player_Y3 <int>, away_player_Y4 <int>, away_player_Y5 <int>,
+#   away_player_Y6 <int>, away_player_Y7 <int>, away_player_Y8 <int>, away_player_Y9 <int>,
+#   away_player_Y10 <int>, away_player_Y11 <int>, home_player_1 <int>, home_player_2 <int>,
+#   home_player_3 <int>, home_player_4 <int>, home_player_5 <int>, home_player_6 <int>,
+#   home_player_7 <int>, home_player_8 <int>, home_player_9 <int>, home_player_10 <int>,
+#   home_player_11 <int>, away_player_1 <int>, away_player_2 <int>, away_player_3 <int>,
+#   away_player_4 <int>, away_player_5 <int>, away_player_6 <int>, away_player_7 <int>,
+#   away_player_8 <int>, away_player_9 <int>, away_player_10 <int>, away_player_11 <int>,
+#   goal <chr>, shoton <chr>, shotoff <chr>, foulcommit <chr>, card <chr>, cross <chr>,
+#   corner <chr>, possession <chr>, B365H <dbl>, B365D <dbl>, B365A <int>, BWH <dbl>, BWD <dbl>,
+#   BWA <dbl>, IWH <dbl>, IWD <dbl>, IWA <dbl>, LBH <dbl>, LBD <dbl>, LBA <dbl>, PSH <dbl>,
+#   PSD <dbl>, PSA <dbl>, WHH <dbl>, WHD <dbl>, WHA <dbl>, SJH <dbl>, SJD <dbl>, SJA <int>,
+#   VCH <dbl>, VCD <dbl>, ...
+NULL

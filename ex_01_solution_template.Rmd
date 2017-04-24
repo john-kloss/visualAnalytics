@@ -1,0 +1,144 @@
+---
+title: "Aufgabenblatt 1"
+fontsize: 11pt
+header-includes: \usepackage[german]{babel}
+output:
+  pdf_document:
+    highlight: tango
+  html_document: default
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, # -> Sollen Code Chunks im gerenderten Dokument angezeigt werden?
+                      eval = TRUE, # -> Sollen R Code Chunks ausgeführt werden?
+                      warning = FALSE, # -> Warnungen sollten nur am Ende zum Rendern auf FALSE gesetzt werden
+                      message = FALSE) # -> Hinweise sollten nur am Ende zum Rendern auf FALSE gesetzt werden
+```
+
+Die _European Soccer Database_ enthält Daten zu mehr als 25.000 nationalen Fußballspielen der besten europäischen Ligen. Das Ziel dieser Übung ist, mithilfe von explorativer Datenanalyse und Visualisierung in R interessante Zusammenhänge darzustellen.
+
+Zunächst muss auf einige der Tabellen in der Datenbank zugegriffen werden. Hinweis: Sie können dazu die Funktion `RSQLite::dbConnect()` verwenden. Um auf eine bestimmte Tabelle der Datenbank zuzugreifen und sie in ein `data.frame` umzuwandeln, können Sie den Befehl `tbl_df(dbGetQuery(connection, 'SELECT * FROM table_xyz'))` benutzen.
+
+```{r}
+library(RSQLite)
+library(stringr)
+library(dplyr)
+# Mit Datenbank verbinden
+con <- dbConnect(SQLite(), dbname = str_c(getwd(), 
+                                          "/Data/EuropeanSoccer.sqlite"))
+# Tabellenabfragen
+match <- tbl_df(dbGetQuery(con,"SELECT * FROM Match"))
+# ...
+# ...
+```
+
+1. Die ersten Ligen Spaniens, Englands, Deutschlands und Italiens gelten als die vier attraktivsten Fußballligen Europas.  
+    a) In welcher der vier Ligen fallen im Schnitt die meisten bzw. wenigsten Tore pro Spiel? 
+    b) Vergleichen Sie Durchschnitt, Median, Standardabweichung, Varianz, Wertebereich (Range) und Interquartilsabstand bzgl. der pro Spiel gefallenen Tore zwischen den vier attraktivsten europäischen Ligen und den restlichen Ligen. 
+
+```{r}
+# Lösung zu Aufgabe 1...
+leagueWithGoals <- data.frame(league=integer(),averageGoals=integer())
+leagues <- filter(match, country_id==1729 | country_id==7809 | country_id==10257 | country_id==21518)
+leagueIds=levels(factor(c(leagues$league_id)))
+for(i in leagueIds){
+  currentLeague <- filter(leagues, league_id==i)
+  avg <- sum(currentLeague$home_team_goal, currentLeague$away_team_goal)/nrow(currentLeague)
+  
+  leagueWithGoals <- add_row(leagueWithGoals, league=i, averageGoals=avg)
+}
+filter(leagueWithGoals, averageGoals==max(leagueWithGoals$averageGoals)) # entspricht Deutschland
+filter(leagueWithGoals, averageGoals==min(leagueWithGoals$averageGoals)) # entspricht Italien
+
+#b
+top4 <- filter(match, country_id==1729 | country_id==7809 | country_id==10257 | country_id==21518)
+rest <- filter(match, country_id!=1729 & country_id!=7809 & country_id!=10257 & country_id!=21518)
+
+comparison <- data.frame(league=character(), mean=integer(), med=integer(), sd=integer(), var=integer(), range=integer(), iqr=integer())
+
+mean4 <- sum(top4$away_team_goal, top4$home_team_goal)/nrow(top4)
+meanr <- sum(rest$away_team_goal, rest$home_team_goal)/nrow(rest)
+
+med4 <- median(top4$away_team_goal, top4$home_team_goal)
+medr <- median(rest$away_team_goal, rest$home_team_goal)
+
+sd4 <- sd(top4$away_team_goal, top4$home_team_goal)
+sdr <- sd(rest$away_team_goal, rest$home_team_goal)
+
+var4 <- var(top4$away_team_goal, top4$home_team_goal)
+varr <- var(rest$away_team_goal, rest$home_team_goal)
+
+range4 <- max(top4$away_team_goal, top4$home_team_goal)-min(top4$away_team_goal, top4$home_team_goal)
+ranger <- max(rest$away_team_goal, rest$home_team_goal)-min(rest$away_team_goal, rest$home_team_goal)
+
+iqr4 <- IQR(top4$away_team_goal, top4$home_team_goal)
+iqrr <- IQR(rest$away_team_goal, rest$home_team_goal)
+
+comparison <- add_row(comparison, league="TOP4", mean=mean4, med=med4, sd=sd4, var=var4, range=range4, iqr=iqr4)
+comparison <- add_row(comparison, league="rest", mean=meanr, med=medr, sd=sdr, var=varr, range=ranger, iqr=iqrr)
+comparison
+
+```
+
+
+2. Gibt es wirklich einen Heimvorteil? Stellen Sie die Anzahl der geschossenen Tore von Heim- bzw. Auswärtsteams jeweils mithilfe eines Boxplots dar. 
+
+```{r}
+# Lösung zu Aufgabe 2...
+
+boxplot(match$home_team_goal)
+boxplot(match$away_team_goal)
+
+#es gibt einen Heimvorteil (siehe Boxplot)
+```
+
+3. _"Alle Fußballer sind Schönwetterspieler!"_ Überprüfen Sie die Behauptung mit einem Liniendiagramm: Fallen in den Sommermonaten tatsächlich durchschnittlich mehr Tore pro Spiel als im Rest des Jahres?
+
+
+```{r}
+# Lösung zu Aufgabe 3...
+months <- c("-01-", "-02-", "-03-", "-04-", "-05-", "-06-", "-07-", "-08-", "-09-", "-10-", "-11-", "-12-")
+results = data.frame(month=integer(), avgGoals=integer())
+listResults <- list()
+y=1
+for(i in months){
+  month <- filter(match, grepl(i,date)==TRUE) 
+  avg <- sum(month$away_team_goal, month$home_team_goal)/nrow(month)
+  results <- add_row(results, month=y, avgGoals=avg)
+  y <- y+1
+}
+plot(results$month, results$avgGoals, type="l")
+
+#Scheinbar mehr Tore im Sommer
+```
+
+4. Stellen Sie die durchschnittlich pro Spiel erzielten Tore für die Top-4-Ligen pro Jahr im  Verlauf von 2008 bis 2016 dar.
+
+```{r}
+# Lösung zu Aufgabe 4...
+```
+
+5. Überprüfen Sie mittels einer geschätzten Dichtefunktionskurve UND eines QQ-Plots, ob die Variable `home_team_possession` (annähernd) normalverteilt ist.
+
+```{r}
+# Lösung zu Aufgabe 5...
+filtered <- filter(match, !is.na(home_team_possession))
+d <- density(filtered$home_team_possession)
+plot(d)
+qqnorm(filtered$home_team_possession)
+qqline(filtered$home_team_possession)
+
+```
+
+6. Zeigen Sie mithilfe eines Boxplots, ob es für Heimteams einen Zusammenhang zwischen Ballbesitz (`home_team_possession`) und Anzahl von geschossenen Toren (`home_team_goals`) pro Spiel gibt. Erstellen Sie dazu vier Kategorien von Ballbesitz-Anteilen: _sehr niedrig_ ($\leq 25\%$), _niedrig_  ($25\%<x\leq50\%$), _hoch_ ($50\%<x\leq 75\%$) und _sehr hoch_ ($x>75\%$).
+
+```{r}
+# Lösung zu Aufgabe 6...
+```
+
+------
+Datensatz:
+
+- http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/EuropeanSoccer.sqlite  
+(für Datenbankschema und Variablenerklärung siehe https://www.kaggle.com/hugomathien/soccer)
