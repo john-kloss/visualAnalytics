@@ -45,7 +45,6 @@ leagueIds=levels(factor(c(leagues$league_id)))
 for(i in leagueIds){
   currentLeague <- filter(leagues, league_id==i)
   avg <- sum(currentLeague$home_team_goal, currentLeague$away_team_goal)/nrow(currentLeague)
-  
   leagueWithGoals <- add_row(leagueWithGoals, league=i, averageGoals=avg)
 }
 filter(leagueWithGoals, averageGoals==max(leagueWithGoals$averageGoals)) # entspricht Deutschland
@@ -87,8 +86,7 @@ comparison
 ```{r}
 # Lösung zu Aufgabe 2...
 
-boxplot(match$home_team_goal)
-boxplot(match$away_team_goal)
+boxplot(match$home_team_goal,match$away_team_goal)
 
 #es gibt einen Heimvorteil (siehe Boxplot)
 ```
@@ -135,6 +133,15 @@ qqline(filtered$home_team_possession)
 
 ```{r}
 # Lösung zu Aufgabe 6...
+filtered <- filter(match, !is.na(home_team_possession & !is.na(home_team_goal))) 
+
+
+
+boxplot(filter(filtered, home_team_possession<25)$home_team_goal,
+  filter(filtered, home_team_possession>25 & home_team_possession<50)$home_team_goal,
+  filter(filtered, home_team_possession>50 & home_team_possession<75)$home_team_goal,
+  filter(filtered, home_team_possession>75)$home_team_goal)
+
 ```
 
 ------
