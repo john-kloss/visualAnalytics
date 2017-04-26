@@ -173,12 +173,107 @@ Clustering in general is an unsupervised method;
 clustering with constraints is supervised
 
 \textbf{Temporal Clustering}
+\begin{itemize}
+	\item reflect changes
+over time
+	\item requires to
+reflect how clusters emerge, merge, split or
+disappear
+\end{itemize}
 
+\textbf{Multiple Clustering}\\
+Clustering results depend on
+\begin{itemize}
+\item the algorithm used,
+\item on the parameters and in case of stochastic algorithms
+\item on the initialization.
+\end{itemize}
+Strategies:
+Compute a first clustering $C_1$ and compute a second
+clustering $C_2$ that fulfils two properties:\\
+– The clustering quality is high.\\
+– The difference between $C_2$ and $C_1$ is high.
 
-
+\subsection{Summary}
+\begin{itemize}
+\item Clustering supports explorative data analysis
+\item A variety of clustering methods exists fitting to different
+cluster models.
+\item Multiple clusterings may provide alternative (and valid)
+perspectives on the data.\\
+– Visual analysis to understand the result and the influence of
+parameters
+\item Clustering is evaluated by means of quality measures
+(silhouette coefficient, ...) and expert feedback based on
+appropriate visualizations\\ – Cluster quality has many aspects – too many to be sufficiently
+represented by one scalar quality value
+\end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Subspace Clustering}
+\subsection{Strategies for subspace search and clustering}
+
+Subspace search refers to methods aiming at finding
+low-dimensional representations of a HD dataset useful
+for grouping (clusterable subspaces).\\
+Subspace search requires heuristics to prune the search:
+For n dimensions: 2 n -1 possible axis-aligned subspaces.\\
+
+Two tasks to be solved:
+\begin{itemize}
+\item Search relevant subspaces and provide a measure
+of 'interestingness' for ranking
+– Since this may take long, it is reasonably a non-interactive
+preprocess
+\item Cluster data in these subspaces
+\end{itemize}
+
+Related tasks in visual subspace analysis (Tatu, 2009):
+\begin{itemize}
+\item Display the subspaces (involved dimensions)
+\item Display similarity between subspaces (w.r.t. involved
+dimensions and topology)
+\item Display the clustering results in these subspaces
+\item Show relations between subspace clusters
+\end{itemize}
+
+\subsection{ Methods for subspace search and clustering}
+Subspace search algorithms aim at finding features
+that correlate locally.\\\\
+Different methods:
+\begin{itemize}
+\item Subspace search algorithms only return subspaces (where
+any global clustering may be applied)
+\item Subspace clustering techniques combine subspace search and clustering
+\end{itemize}
+
+Assumptions and Heuristics
+\begin{itemize}
+\item Since the number of possible arbitrarily oriented sub-
+spaces is infinite, assumptions and heuristics are
+used.
+\item Most algorithms search only for axis-aligned
+subspaces
+\item Some algorithms (again) expect a certain number of
+clusters and optimize subspace search accordingly
+\item Some algorithms are biased towards low
+dimensional clusters
+\end{itemize}
+
+Preprocessing
+\begin{itemize}
+\item Treatment of incomplete datasets
+\item If categorical variables are not treated separately, they are
+transformed to numbers
+\item Normalization
+\end{itemize}
+
+Subspace search without clustering
+'Ranking Interesting Subspaces' (RIS)
+\subsection{ Visualization of Clustering Results}
+
+\subsection{Applications}
+\subsection{ Evaluation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -220,3 +315,4 @@ clustering with constraints is supervised
 
 \section{Interactive cooperative Visual Analytics}
 
+\end{document}
