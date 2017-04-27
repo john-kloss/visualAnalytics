@@ -40,10 +40,10 @@ K<-1
 i<-0
 
 centers<- dat[c((K+i):(K+i+2)),1:2] 
-print(euc<-rdist(centers,dat)) 
+euc<-rdist(centers,dat) 
 size<-which(euc==min(euc))
 euc<-rbind(euc,cluster=(apply(euc,2,which.min)))
-centers<-centers %>% sum(select(col(euc), cluster=factor(euc$cluster))) #add_column(avgDist=c())
+centers<-centers %>% sum(select(col(euc), cluster=factor(euc$cluster))) 
 
 
 
