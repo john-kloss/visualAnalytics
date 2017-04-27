@@ -18,6 +18,8 @@ knitr::opts_chunk$set(echo = TRUE, # -> Sollen Code Chunks im gerenderten Dokume
 library(tidyverse)
 library(stringr)
 library(magrittr)
+library(dplyr)
+library(fields)
 ```
 
 1. Gegeben sei der nachstehende zweidimensionale Datensatz. Führen Sie ein $K$-means Clustering mit $K=3$ unter Verwendung der euklidischen Distanz durch. Verwenden Sie die ersten drei Punkte als Anfangszentroiden. Geben Sie bei jeder Algorithmeniteration jeweils die Distanzen zwischen Zentroiden und allen Punkten an und berechnen Sie nach jeder Neuzuordnung der Punkte die veränderten Zentroiden.  
@@ -28,12 +30,21 @@ x         | 2.0| 2.0| 2.0| 2.5| 2.5| 3.0| 4.0| 4.0| 4.5| 4.5| 4.5 | 4.5
 y         | 1.0| 1.5| 2.0| 1.0| 2.0| 4.0| 1.0| 2.5| 1.0| 1.5| 2.5 | 3.0
 
 ```{r}
-# dat <- tibble(
-#   x = c(2.0, 2.0, 2.0, 2.5, 2.5, 3.0, 4.0, 4.0, 4.5, 4.5, 4.5 , 4.5),
-#   y = c(1.0, 1.5, 2.0, 1.0, 2.0, 4.0, 1.0, 2.5, 1.0, 1.5, 2.5 , 3.0)
-# )
+ dat <- tibble(
+   x = c(2.0, 2.0, 2.0, 2.5, 2.5, 3.0, 4.0, 4.0, 4.5, 4.5, 4.5 , 4.5),
+   y = c(1.0, 1.5, 2.0, 1.0, 2.0, 4.0, 1.0, 2.5, 1.0, 1.5, 2.5 , 3.0)
+ )
 
 # Lösung zu Aufgabe 1...
+K<-1
+i<-0
+
+centers<- dat[c((K+i):(K+i+2)),1:2] 
+print(euc<-rdist(centers,dat)) 
+size<-which(euc==min(euc))
+euc<-rbind(euc,cluster=(apply(euc,2,which.min)))
+centers<-centers %>% sum(select(col(euc), cluster=factor(euc$cluster))) #add_column(avgDist=c())
+
 
 
 ```
@@ -43,7 +54,16 @@ Führen Sie je ein $K$-means-Clustering für alle $k\in \{2,3,\ldots,8\}$ durch.
 
 ```{r}
 # Lösung zu Aufgabe 2...
-# student <- read_csv(str_c(dirname(getwd()), "/Data/clustering-student-mat.csv"))
+ student <- read_csv(str_c(dirname(getwd()), "/visualAnalytics/Data/clustering-student-mat.csv"))
+k<-c(2:8)
+for (j in k){
+  clust<-kmeans(student,centers=j)
+  student<-student %>% mutate(cluster = factor(clust$cluster))
+  plt<-ggplot(student, aes(Exam1, Exam2, color = cluster, 
+                                         fill = cluster))+
+    geom_point()
+  print(plt)
+}
 
 ```
 
@@ -51,6 +71,14 @@ Führen Sie je ein $K$-means-Clustering für alle $k\in \{2,3,\ldots,8\}$ durch.
 
 ```{r}
 # Lösung zu Aufgabe 3...
+k<-c(2:8)
+for (j in k){
+  clust<-kmeans(student,centers=j)
+  student<-student %>% mutate(cluster = factor(clust$cluster))
+  si <- silhouette(clust$cluster, dist(student))
+  #windows()
+  plot(si)
+}
 ```
 
 4. Gegeben sei die nachstehende Distanzmatrix. Führen Sie agglomeratives hierarchisches Clustering mit _single_ und _complete_ Linkage durch. Stellen Sie das Ergebnis in einem Dendrogramm dar. Das Dendrogramm sollte die Reihenfolge des Zusammenfügens der Punkte darstellen.
