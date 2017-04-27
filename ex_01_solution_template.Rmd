@@ -17,8 +17,7 @@ knitr::opts_chunk$set(echo = TRUE, # -> Sollen Code Chunks im gerenderten Dokume
 ```
 
 Die _European Soccer Database_ enthält Daten zu mehr als 25.000 nationalen Fußballspielen der besten europäischen Ligen. Das Ziel dieser Übung ist, mithilfe von explorativer Datenanalyse und Visualisierung in R interessante Zusammenhänge darzustellen.
-
-Zunächst muss auf einige der Tabellen in der Datenbank zugegriffen werden. Hinweis: Sie können dazu die Funktion `RSQLite::dbConnect()` verwenden. Um auf eine bestimmte Tabelle der Datenbank zuzugreifen und sie in ein `data.frame` umzuwandeln, können Sie den Befehl `tbl_df(dbGetQuery(connection, 'SELECT * FROM table_xyz'))` benutzen.
+fen werden. Hinweis: Sie können dazu die Funktion `RSQLite::dbConnect()` verwenden. Um auf eine bestimmte Tabelle der Datenbank zuzugreifen und sie in ein `data.frame` umzuwandeln, können Sie den Befehl `tbl_df(dbGetQuery(connection, 'SELECT * FROM table_xyz'))` benutzen.
 
 ```{r}
 library(RSQLite)
@@ -65,8 +64,8 @@ medr <- median(rest$away_team_goal, rest$home_team_goal)
 sd4 <- sd(top4$away_team_goal, top4$home_team_goal)
 sdr <- sd(rest$away_team_goal, rest$home_team_goal)
 
-var4 <- var(top4$away_team_goal, top4$home_team_goal)
-varr <- var(rest$away_team_goal, rest$home_team_goal)
+var4 <- var(top4$away_team_goal+top4$home_team_goal)
+varr <- var(rest$away_team_goal+rest$home_team_goal)
 
 range4 <- max(top4$away_team_goal, top4$home_team_goal)-min(top4$away_team_goal, top4$home_team_goal)
 ranger <- max(rest$away_team_goal, rest$home_team_goal)-min(rest$away_team_goal, rest$home_team_goal)

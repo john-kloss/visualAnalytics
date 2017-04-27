@@ -1,0 +1,76 @@
+---
+title: "Aufgabenblatt 2"
+fontsize: 11pt
+header-includes: \usepackage[german]{babel}
+output:
+  pdf_document:
+    highlight: tango
+  html_document: default
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, # -> Sollen Code Chunks im gerenderten Dokument angezeigt werden?
+                      eval = TRUE, # -> Sollen R Code Chunks ausgeführt werden?
+                      warning = FALSE, # -> Warnungen sollten nur am Ende zum Rendern auf FALSE gesetzt werden
+                      message = FALSE) # -> Hinweise sollten nur am Ende zum Rendern auf FALSE gesetzt werden
+
+library(tidyverse)
+library(stringr)
+library(magrittr)
+```
+
+1. Gegeben sei der nachstehende zweidimensionale Datensatz. Führen Sie ein $K$-means Clustering mit $K=3$ unter Verwendung der euklidischen Distanz durch. Verwenden Sie die ersten drei Punkte als Anfangszentroiden. Geben Sie bei jeder Algorithmeniteration jeweils die Distanzen zwischen Zentroiden und allen Punkten an und berechnen Sie nach jeder Neuzuordnung der Punkte die veränderten Zentroiden.  
+
+<nbsp;>   | p1 | p2 | p3 | p4 | p5 | p6 | p7 | p8| p9 | p10 | p11 | p12
+--------- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | --  | -- 
+x         | 2.0| 2.0| 2.0| 2.5| 2.5| 3.0| 4.0| 4.0| 4.5| 4.5| 4.5 | 4.5
+y         | 1.0| 1.5| 2.0| 1.0| 2.0| 4.0| 1.0| 2.5| 1.0| 1.5| 2.5 | 3.0
+
+```{r}
+# dat <- tibble(
+#   x = c(2.0, 2.0, 2.0, 2.5, 2.5, 3.0, 4.0, 4.0, 4.5, 4.5, 4.5 , 4.5),
+#   y = c(1.0, 1.5, 2.0, 1.0, 2.0, 4.0, 1.0, 2.5, 1.0, 1.5, 2.5 , 3.0)
+# )
+
+# Lösung zu Aufgabe 1...
+
+
+```
+
+2. Eine Schule möchte ihre Schüler nach den Leistungen bei zwei Zwischenprüfungen gruppieren. Es wird davon ausgegangen, dass es mindestens 2 Cluster von Schülern gibt. Laden Sie die Datei `clustering-student-mat.csv` ein. Die Datei enthält zu jeder der beiden Prüfungen die Anzahl der erzielten Punktzahl für insgesamt 395 Schüler.  
+Führen Sie je ein $K$-means-Clustering für alle $k\in \{2,3,\ldots,8\}$ durch. Stellen Sie die Clusterzuordnungen der Punkte in einem Streudiagramm (Scatter Plot) dar.
+
+```{r}
+# Lösung zu Aufgabe 2...
+# student <- read_csv(str_c(dirname(getwd()), "/Data/clustering-student-mat.csv"))
+
+```
+
+3. Ermitteln Sie für das Clustering aus Ausgabe 2 den optimalen Wert für die Anzahl der Cluster $K$ mithilfe des Silhouetten-Koeffizienten. Bewerten Sie das Ergebnis im Hinblick auf die Repräsentativität der Zentroiden bezüglich ihres Clusters.
+
+```{r}
+# Lösung zu Aufgabe 3...
+```
+
+4. Gegeben sei die nachstehende Distanzmatrix. Führen Sie agglomeratives hierarchisches Clustering mit _single_ und _complete_ Linkage durch. Stellen Sie das Ergebnis in einem Dendrogramm dar. Das Dendrogramm sollte die Reihenfolge des Zusammenfügens der Punkte darstellen.
+```{r}
+dm <- tribble(~p1,~p2,~p3,~p4,~p5,
+              0.00, 0.02, 0.90, 0.36, 0.53,
+              0.02, 0.00, 0.65, 0.15, 0.24,
+              0.90, 0.65, 0.00, 0.59, 0.45,
+              0.36, 0.15, 0.59, 0.90, 0.56,
+              0.53, 0.24, 0.45, 0.56, 0.00) %>% as.matrix()
+rownames(dm) <- letters[1:5]
+colnames(dm) <- letters[1:5]
+knitr::kable(dm)
+```
+
+```{r}
+# Lösung zu Aufgabe 4...
+```
+
+------
+
+Datensatz für Aufgabe 2:  
+http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/clustering-student-mat.csv
