@@ -3,9 +3,9 @@ title: "Aufgabenblatt 2"
 fontsize: 11pt
 header-includes: \usepackage[german]{babel}
 output:
+  html_document: default
   pdf_document:
     highlight: tango
-  html_document: default
 fig_caption: yes
 ---
 
@@ -87,10 +87,10 @@ for (j in k){
   plot(si)
   dev.off()
 }
-#Repr‰sentativit‰t der Zentroiden zu ihrem Cluster = Silhouetten-Koeffizienten sollten ‰hnlich sein
-#2 bis 5 relativ durchwachsen, viele Mitglieder eines Clusters haben nahezu gleiche Entfernung zu anderen Clusterelementen wie geringste Entfernung zu Element aus anderem Cluster, die Werte meist im mittleren Bereich ca. um .50 herum -> mittelgute Repr‰sentativit‰t der Cluster, auch negativ-Werte dabei -> mˆgliche Falsch-Klassifizierung
-#ab 6 st‰rkere Repr‰sentativit‰t der Zentroiden, da einzelne Durchschnittswerte f¸r ein Cluster hˆher werden und Durchwachsenheit der Werte im Cluster abnimmt
-# 8 beste Repr‰sentativit‰t, aufgrund der ‰hnlichen Silhouettenwerte im jeweiligen Cluster
+#Repr?sentativit?t der Zentroiden zu ihrem Cluster = Silhouetten-Koeffizienten sollten ?hnlich sein
+#2 bis 5 relativ durchwachsen, viele Mitglieder eines Clusters haben nahezu gleiche Entfernung zu anderen Clusterelementen wie geringste Entfernung zu Element aus anderem Cluster, die Werte meist im mittleren Bereich ca. um .50 herum -> mittelgute Repr?sentativit?t der Cluster, auch negativ-Werte dabei -> m?gliche Falsch-Klassifizierung
+#ab 6 st?rkere Repr?sentativit?t der Zentroiden, da einzelne Durchschnittswerte f?r ein Cluster h?her werden und Durchwachsenheit der Werte im Cluster abnimmt
+# 8 beste Repr?sentativit?t, aufgrund der ?hnlichen Silhouettenwerte im jeweiligen Cluster
 ```
 
 4. Gegeben sei die nachstehende Distanzmatrix. F√ºhren Sie agglomeratives hierarchisches Clustering mit _single_ und _complete_ Linkage durch. Stellen Sie das Ergebnis in einem Dendrogramm dar. Das Dendrogramm sollte die Reihenfolge des Zusammenf√ºgens der Punkte darstellen.
@@ -105,16 +105,12 @@ rownames(dm) <- letters[1:5]
 colnames(dm) <- letters[1:5]
 knitr::kable(dm)
 
-<<<<<<< HEAD
-```{r}
 # L√∂sung zu Aufgabe 4...
 
-=======
 library(ggdendro)
 hc <- hclust(as.dist(dm), method = "single")
 d_sl <- ggdendrogram(hc, rotate = F, size = 2)
 d_sl
->>>>>>> 77e82fdfbb1219fb1129c8873f711898f57b688b
 ```
 
 ------
