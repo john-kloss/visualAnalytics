@@ -20,6 +20,7 @@ library(stringr)
 library(magrittr)
 library(dplyr)
 library(fields)
+library(ggdendro)
 ```
 
 1. Gegeben sei der nachstehende zweidimensionale Datensatz. Führen Sie ein $K$-means Clustering mit $K=3$ unter Verwendung der euklidischen Distanz durch. Verwenden Sie die ersten drei Punkte als Anfangszentroiden. Geben Sie bei jeder Algorithmeniteration jeweils die Distanzen zwischen Zentroiden und allen Punkten an und berechnen Sie nach jeder Neuzuordnung der Punkte die veränderten Zentroiden.  
@@ -82,10 +83,10 @@ for (j in k){
   clust<-kmeans(student,centers=j)
   student<-student %>% mutate(cluster = factor(clust$cluster))
   si <- silhouette(clust$cluster, dist(student))
-  window(si)
-  pdf(paste0(j, 'plot.pdf',sep=""))
-  plot(si)
-  dev.off()
+  #window(si)
+  #pdf(paste0(j, 'plot.pdf',sep=""))
+  #plot(si)
+  #dev.off()
 }
 #Repr?sentativit?t der Zentroiden zu ihrem Cluster = Silhouetten-Koeffizienten sollten ?hnlich sein
 #2 bis 5 relativ durchwachsen, viele Mitglieder eines Clusters haben nahezu gleiche Entfernung zu anderen Clusterelementen wie geringste Entfernung zu Element aus anderem Cluster, die Werte meist im mittleren Bereich ca. um .50 herum -> mittelgute Repr?sentativit?t der Cluster, auch negativ-Werte dabei -> m?gliche Falsch-Klassifizierung
