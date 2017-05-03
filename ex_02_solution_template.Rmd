@@ -99,16 +99,22 @@ dm <- tribble(~p1,~p2,~p3,~p4,~p5,
               0.00, 0.02, 0.90, 0.36, 0.53,
               0.02, 0.00, 0.65, 0.15, 0.24,
               0.90, 0.65, 0.00, 0.59, 0.45,
-              0.36, 0.15, 0.59, 0.90, 0.56,
+              0.36, 0.15, 0.59, 0.00, 0.56,
               0.53, 0.24, 0.45, 0.56, 0.00) %>% as.matrix()
 rownames(dm) <- letters[1:5]
 colnames(dm) <- letters[1:5]
 knitr::kable(dm)
-```
 
+<<<<<<< HEAD
 ```{r}
 # Lösung zu Aufgabe 4...
 
+=======
+library(ggdendro)
+hc <- hclust(as.dist(dm), method = "single")
+d_sl <- ggdendrogram(hc, rotate = F, size = 2)
+d_sl
+>>>>>>> 77e82fdfbb1219fb1129c8873f711898f57b688b
 ```
 
 ------
