@@ -14,6 +14,13 @@ knitr::opts_chunk$set(echo = TRUE, # -> Sollen Code Chunks im gerenderten Dokume
                       eval = TRUE, # -> Sollen R Code Chunks ausgeführt werden?
                       warning = FALSE, # -> Warnungen sollten nur am Ende zum Rendern auf FALSE gesetzt werden
                       message = FALSE) # -> Hinweise sollten nur am Ende zum Rendern auf FALSE gesetzt werden
+
+library(dplyr)
+library(dbscan)
+library(tibble)
+library(stringr)
+library(forcats)
+
 ```
 
 1. Verwenden Sie DBSCAN, um Clusters von nah aneinanderliegenden großen Städten der Erde (Ballungsräume) zu finden. Eine Stadt mit mindestens 50.000 Einwohnern gilt als groß. Die $\epsilon$-Nachbarschaft einer Stadt enthält alle anliegenden Städte mit einem Euklidischen Abstand von höchstens 0,15 in Bezug auf Breiten- und Längengrad. Eine Stadt gilt als Kernobjekt eines Ballungsraums, wenn mindestens 8 Städte in ihrer $\epsilon$-Nachbarschaft liegen. Verwenden Sie zum Clustering den Datensatz `maps::world.cities`. Beantworten Sie die folgenden Fragen:
@@ -25,8 +32,42 @@ e) Sind `Essen` und `Castrop-Rauxel` (direkt) dichte-erreichbar oder dichte-verb
 f) Welche Städte sind von `Bochum` aus dichte-erreichbar, aber nicht _direkt_ dichte-erreichbar?
 
 ```{r}
+
 # Lösung zu Aufgabe 1...
-```
+map <- filter(maps::world.cities, pop >= 50000)
+cluster <- dbscan(map %>% select(long, lat), minPts = 8, eps = 0.15)
+# a) 41 Cluster, 8127 noise object
+length(which(cluster$cluster>8))
+# 520 core objects, 231 border object
+
+# b) 103
+map[which(cluster$cluster==1)[1],2]
+
+# c)
+res <- data.frame(country=character(), count=integer())
+for(i in 1:length(cluster$cluster)){
+  if(cluster$cluster[i] > 0) {
+    if(length(which(grepl(map[i,2], res$country)==TRUE))>0){ #country has a row
+      #filter(res, country==map[i,2])
+      res[which(res$country==map[i,2]),2] = res[which(res$country==map[i,2]),2]+1
+    }
+    else{ # country doesn't have a row yet
+      res <- add_row(res, country=map[i,2], count=1)
+    }
+  }
+}
+
+# d)
+# dm <- map %>% select(long, lat) %>% dist() %>% as.matrix() %>% as_tibble()
+
+for(i in 1:length(map)){
+  print(abs(map[6263,]$lat - map[i,]$lat))
+  if(abs(map[6263,]$lat - map[i,]$lat)<0.15){
+    print(i)
+  }
+}
+
+``` 
 
 
 
@@ -34,12 +75,45 @@ f) Welche Städte sind von `Bochum` aus dichte-erreichbar, aber nicht _direkt_ d
 
 ```{r}
 # Lösung zu Aufgabe 2...
+student <- read_csv(str_c(dirname(getwd()), "/visualAnalytics/Data/clustering-student-mat.csv"))
+dm <- student %>% select(Exam1, Exam2) %>% dist() %>% as.matrix() %>% as_tibble()
+dm <- dm %>% mutate(id = row_number()) %>% gather(id2, dist, -id) 
+dm %>% group_by(id) %>% arrange(dist) %>% slice(6) %>% ungroup() %>%
+  arrange(dist) %>%
+  mutate(no = row_number()) %>%
+  ggplot(aes(x = no, y = dist)) + geom_line() +
+    geom_hline(yintercept = 2.24, linetype = 2) +
+  labs(x = str_c("Points sorted by distance to ", 6, "th nearest neighbor"), 
+       y = str_c(6, "th nearest neighbor distance"))
+
+clu <- dbscan(student %>% select(Exam1, Exam2), minPts = 6, eps = 2.24)
+clu
+
+stu_clu <- student %>%
+  select(Exam1, Exam2) %>%
+  bind_cols(., tibble(Cluster = clu$cluster)) %>%
+  mutate(Cluster = factor(Cluster)) %>%
+  mutate(Cluster = fct_recode(Cluster, "Noise" = "0"))
+
+hull <- stu_clu  %>%
+    split(.$Cluster) %>%
+    map(~ slice(., chull(.$Petal.Width, .$Sepal.Length))) %>%
+    do.call("rbind", .)
+
+ggplot(stu_clu, aes(Exam1,Exam2, color = Cluster, fill = Cluster)) +
+  geom_polygon(data = hull %>% filter(!Cluster == "Noise"), alpha = .5, color = "black") +
+  geom_point(pch = 21) +
+  scale_fill_discrete(drop = F) +
+  scale_color_discrete(drop = F)
+
+
 ```
 
 3. Gegeben Sei erneut der Datensatz aus Aufgabe 2 des Aufgabenblatts 2. Verwenden Sie OPTICS, um ein Dichte-Erreichbarkeitsdiagramm für $minPts=6$ zu erstellen. Extrahieren Sie jeweils ein Clustering für $\textit{reachability-dist}=\{1,1.5,\ldots,5\}$ und stellen Sie das Ergebnis jeweils in einem Scatter Plot dar. Heben Sie Clusterzuordnungen und Ausreißer (Noise Points) farblich hervor. Bewerten Sie die Veränderung des Clustering-Ergebnisses mit zunehmenden Schwellwert für $\textit{reachability-dist}$ bezüglich der Anzahl von Clusters sowie der Anzahl von Core Border, und Noise Points.
 
 ```{r}
 # Lösung zu Aufgabe 3...
+
 ```
 
 4. Diskutieren Sie am Beispiel des Silhouettenkoeffizienten die Stärken und Schwächen von internen Qualitätsmaßen? Warum sind sie für den Vergleich zwischen Clusterings verschiedener Algorithmen (z.B. $K$-Means und DBSCAN) nur bedingt geeignet? In welchen Fällen sollte man sie dennoch einsetzen?
