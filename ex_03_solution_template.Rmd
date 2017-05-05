@@ -20,6 +20,9 @@ library(dbscan)
 library(tibble)
 library(stringr)
 library(forcats)
+library(ggplot2)
+library(maps)
+library(tidyr)
 
 ```
 
@@ -75,7 +78,8 @@ for(i in 1:length(map)){
 
 ```{r}
 # Lösung zu Aufgabe 2...
-student <- read_csv(str_c(dirname(getwd()), "/visualAnalytics/Data/clustering-student-mat.csv"))
+
+student <- read.csv(str_c(dirname(getwd()), "/visualAnalytics/Data/clustering-student-mat.csv"))
 dm <- student %>% select(Exam1, Exam2) %>% dist() %>% as.matrix() %>% as_tibble()
 dm <- dm %>% mutate(id = row_number()) %>% gather(id2, dist, -id) 
 dm %>% group_by(id) %>% arrange(dist) %>% slice(6) %>% ungroup() %>%
@@ -95,13 +99,10 @@ stu_clu <- student %>%
   mutate(Cluster = factor(Cluster)) %>%
   mutate(Cluster = fct_recode(Cluster, "Noise" = "0"))
 
-hull <- stu_clu  %>%
-    split(.$Cluster) %>%
-    map(~ slice(., chull(.$Petal.Width, .$Sepal.Length))) %>%
-    do.call("rbind", .)
+
 
 ggplot(stu_clu, aes(Exam1,Exam2, color = Cluster, fill = Cluster)) +
-  geom_polygon(data = hull %>% filter(!Cluster == "Noise"), alpha = .5, color = "black") +
+  
   geom_point(pch = 21) +
   scale_fill_discrete(drop = F) +
   scale_color_discrete(drop = F)
@@ -114,11 +115,61 @@ ggplot(stu_clu, aes(Exam1,Exam2, color = Cluster, fill = Cluster)) +
 ```{r}
 # Lösung zu Aufgabe 3...
 
+student <- read.csv(str_c(dirname(getwd()), "/visualAnalytics/Data/clustering-student-mat.csv"))
+optics_clu <- optics(student %>% select(Exam1, Exam2), eps = 10, minPts = 6)
+
+student_clu <- student %>%
+  select(Exam1, Exam2) %>%
+  bind_cols(., tibble(R_Dist = optics_clu$reachdist))
+student_clu <- student_clu[optics_clu$order,]
+student_clu$Order <- 1:nrow(student_clu)
+
+ggplot(student_clu, aes(x = Order, xend = Order, y = 0, yend = R_Dist)) +
+  geom_segment() +
+  labs(y = "Reachability-dist")
+
+for(i in seq(1,5,0.5)){
+clu <- extractDBSCAN(optics_clu, eps_cl = i)
+
+student_clu <- student %>%
+  select(Exam1,Exam2) %>%
+  bind_cols(., tibble(Cluster = clu$cluster, R_Dist = optics_clu$reachdist)) %>%
+  mutate(Cluster = factor(Cluster)) %>%
+  mutate(Cluster = fct_recode(Cluster, "Noise" = "0"))
+student_clu <- student_clu[optics_clu$order,]
+student_clu$Order <- 1:nrow(student_clu)
+
+
+#student_hull <- student_clu  %>%
+#    split(.$Cluster) %>%
+#    map(~ slice(., chull(.$Exam1, .$Exam2))) %>%
+#    do.call("rbind", .)
+
+print(ggplot(student_clu, aes(Exam1, Exam2, color = Cluster, fill = Cluster)) +
+#  geom_polygon(data = student_hull %>% filter(!Cluster == "Noise"), alpha = .5, color = "black") +
+  geom_point(pch = 21) +
+  scale_fill_discrete(drop = F) +
+  scale_color_discrete(drop = F)+
+  ggtitle(i))
+}
+
+# größeres i -> weniger noise, weniger cluster
 ```
 
 4. Diskutieren Sie am Beispiel des Silhouettenkoeffizienten die Stärken und Schwächen von internen Qualitätsmaßen? Warum sind sie für den Vergleich zwischen Clusterings verschiedener Algorithmen (z.B. $K$-Means und DBSCAN) nur bedingt geeignet? In welchen Fällen sollte man sie dennoch einsetzen?
 
-<!-- Antwort zu Aufgabe 4... -->
+<!-- Antwort zu Aufgabe 4...
+- schlecht bei konkaven Clustern
+- gut bei konvexen Clustern
+- schlecht bei unterschiedlichen Dichten
+- schlecht bei überlappenden Clustern
+
+- k-means macht nur konvexe Cluster, andere auch konkave
+
+- verschiedene Durchläufe des gleichen Clusteringalgorithmus (indeterministische)
+- ähnliche Algorithmen zu vergleichen
+
+-->
 
 ------
 
