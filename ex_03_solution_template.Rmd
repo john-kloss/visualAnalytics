@@ -86,11 +86,11 @@ dm %>% group_by(id) %>% arrange(dist) %>% slice(6) %>% ungroup() %>%
   arrange(dist) %>%
   mutate(no = row_number()) %>%
   ggplot(aes(x = no, y = dist)) + geom_line() +
-    geom_hline(yintercept = 2.24, linetype = 2) +
+    geom_hline(yintercept = 5, linetype = 2) +
   labs(x = str_c("Points sorted by distance to ", 6, "th nearest neighbor"), 
        y = str_c(6, "th nearest neighbor distance"))
 
-clu <- dbscan(student %>% select(Exam1, Exam2), minPts = 6, eps = 2.24)
+clu <- dbscan(student %>% select(Exam1, Exam2), minPts = 6, eps = 5)
 clu
 
 stu_clu <- student %>%
