@@ -19,6 +19,12 @@ knitr::opts_chunk$set(echo = TRUE,
                       eval = TRUE,
                       warning = FALSE,
                       message = FALSE)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(car)
+library(modelr)
+
 ```
 
 Ein Makler möchte mithilfe von linearer Regression heraufinden, welche Faktoren einen großen Einfluss auf den Immobilienpreis haben. Dazu seien die in Tabelle 1 beschriebenen Variablen für die letzten 88 Verkäufe in der Region des Maklers gegeben.
@@ -38,28 +44,147 @@ Variable   | Beschreibung
 
 1.  Erstellen Sie ein lineares Regressionsmodell mit `price` als abhängiger Variable und `bdrms`, `lotsize`, `sqrm` und `country`  als unabhängigen Variablen. 
     a) Bestimmen Sie die Regressionskoeffizienten und $p$-Werte der abhängigen Variablen und vergleichen Sie deren Einfluss innerhalb des Modells auf den vorhergesagten Wert für `price`. 
-    b) Ermitteln Sie, wie viel Varianz der abhängigen Variablen erklärt wird. 
-    c) Prüfen Sie die Residuen (graphisch) auf Normalverteilung und Homoskedastizität.
-    
+   
 ```{r}
-# Lösung zu Aufgabe 1...
+hprice <- read.csv(str_c(dirname(getwd()), "/visualAnalytics/Data/hprice.csv"))
+
+fitb <- hprice %>%
+  lm(price ~ bdrms, data=.)
+summary(fitb)$r.squared
+summary(fitb)$coef
+fitl <- hprice %>%
+  lm(price ~ lotsize, data=.)
+summary(fitl)$r.squared
+summary(fitl)$coef
+fits <- hprice %>%
+  lm(price ~ sqrm, data=.)
+summary(fits)$r.squared
+summary(fits)$coef
+fitc <- hprice %>%
+  lm(price ~ country, data=.)
+summary(fitc)$r.squared
+summary(fitc)$coef
+
+
+```
+
+ b) Ermitteln Sie, wie viel Varianz der abhängigen Variablen erklärt wird. 
+ 
+```{r}
+vif(lm(price ~ bdrms + lotsize + sqrm + country, data=hprice))
+```
+    c) Prüfen Sie die Residuen (graphisch) auf Normalverteilung und Homoskedastizität.
+```{r}
+hprice %>%
+  ggplot(aes(price, bdrms))+
+  geom_point(color="black") 
+  
+qqnorm(hprice$price, main="price")
+qqnorm(hprice$bdrms, main="bdrms")
+qqnorm(hprice$lotsize, main="lotsize")
+qqnorm(hprice$sqrm, main="sqrm")
+qqnorm(hprice$country, main="country")
+
+hprice %>%
+  add_predictions(fitb) %>%
+  add_residuals(fitb) %>% 
+  ggplot(aes(pred, resid)) +
+  geom_point() +
+  ggtitle("bdrms")
+
+hprice %>%
+  add_predictions(fitl) %>%
+  add_residuals(fitl) %>% 
+  ggplot(aes(pred, resid)) +
+  geom_point() +
+  ggtitle("lotsize")
+
+hprice %>%
+  add_predictions(fits) %>%
+  add_residuals(fits) %>% 
+  ggplot(aes(pred, resid)) +
+  geom_point()  +
+  ggtitle("sqrm")
+
+hprice %>%
+  add_predictions(fitc) %>%
+  add_residuals(fitc) %>% 
+  ggplot(aes(pred, resid)) +
+  geom_point()  +
+  ggtitle("country")
+
+
 ```
 
 2. Gegeben Sei das lineare Regressionsmodell aus Aufgabe 1.
     a) Erstellen Sie jeweils einen Scatterplot zur Darstellung des Zusammenhangs zwischen vorhergesagtem Wert für `price` und Residuengröße.
+    
+```{r}
+hprice %>%
+  add_predictions(fitb) %>%
+  add_residuals(fitb) %>% 
+  ggplot(aes(pred, resid)) +
+  geom_point() +
+  ggtitle("bdrms")
+
+hprice %>%
+  add_predictions(fitl) %>%
+  add_residuals(fitl) %>% 
+  ggplot(aes(pred, resid)) +
+  geom_point() +
+  ggtitle("lotsize")
+
+hprice %>%
+  add_predictions(fits) %>%
+  add_residuals(fits) %>% 
+  ggplot(aes(pred, resid)) +
+  geom_point()  +
+  ggtitle("sqrm")
+
+hprice %>%
+  add_predictions(fitc) %>%
+  add_residuals(fitc) %>% 
+  ggplot(aes(pred, resid)) +
+  geom_point()  +
+  ggtitle("country")
+
+```
     b) Für einige Häuser liegt die Preisvorhersage des Makler-Modells um mehr als 100,000 EUR daneben. Heben Sie Häuser mit einer Residuengröße von mehr als 100 bzw. weniger als 100 hervor. Was könnten die Gründe für hohe Modellungenauigkeiten sein?
+    
+```{r}
+for(i in (1:88)){
+  if(fitb$residuals[i] > 100 | fitb$residuals < -100)
+    print(paste0("b: ",i))
+  if(fitl$residuals[i] > 100 | fitb$residuals < -100)
+    print(paste0("l: ",i))
+  if(fits$residuals[i] > 100 | fitb$residuals < -100)
+    print(paste0("s: ",i))
+  if(fitc$residuals[i] > 100 | fitb$residuals < -100)
+    print(paste0("c: ",i))
+}
+```
     c) Lässt sich der $R^2$-Wert erhöhen, indem eine Lineartransformation einer der unabhängigen Variablen verwendet wird?
 
-```{r}
-# Lösung zu Aufgabe 2...
-```
+
+<!--
+Nein, Verhältnisse zwischen den Werten bleiben erhalten.
+-->
+
 
 3. Stellen Sie den Zusammenhang zwischen `bdrms` und `price` grafisch dar. Überprüfen Sie, ob sich dieser Zusammenhang auch im Regressionsmodell aus Aufgabe 1 widerspiegelt. Erstellen Sie ein Regressionsmodell mit `bdrms` als alleiniger unabhängigen Variable. Vergleichen Sie die Regressionskoeffizienten mit dem des Modells aus Aufgabe 1 und interpretieren Sie die Unterschiede. 
 
 ```{r}
-# Lösung zu Aufgabe 3...
+
+hprice %>%
+  ggplot(aes(bdrms, price)) + 
+  geom_point() +
+  geom_abline(intercept = mean(hprice$price) - cor(hprice$price, hprice$bdrms) * sd(hprice$price) / sd(hprice$bdrms) * mean(hprice$bdrms), slope = cor(hprice$price, hprice$bdrms) * sd(hprice$price) / sd(hprice$bdrms) , col = "blue")
+
+fitb <- hprice %>%
+  lm(price ~ bdrms, data=.)
+print(fitb)
 ```
-------
+
 Datensatz:
 
 - http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/hprice.csv
