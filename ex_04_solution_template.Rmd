@@ -1,0 +1,65 @@
+---
+title: "Aufgabenblatt 4"
+fontsize: 11pt
+header-includes:
+    - \usepackage[german]{babel}
+    - \usepackage{caption}
+output:
+  html_document: default
+highlight: tango
+fig_caption: yes
+
+---
+
+\captionsetup[table]{labelformat=empty}
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+Ein Makler möchte mithilfe von linearer Regression heraufinden, welche Faktoren einen großen Einfluss auf den Immobilienpreis haben. Dazu seien die in Tabelle 1 beschriebenen Variablen für die letzten 88 Verkäufe in der Region des Maklers gegeben.
+
+Table: Tabelle 1 Hauspreisdatensatz
+
+Variable   | Beschreibung
+---------  | -------------
+`price`    | Hauspreis ($\times$ 1,000 EUR)
+`bdrms`    | Anzahl Schlafzimmer
+`lotsize`  | Parkplatzfläche (m$^2$)
+`sqrm`     | Hausfläche (m$^2$)
+`country`  | $==1$ wenn im Landhaus-Stil
+`lprice`   | `log(price)`
+`llotsize` | `log(lotsize)`
+`lsqrm`    | `log(sqrm)`
+
+1.  Erstellen Sie ein lineares Regressionsmodell mit `price` als abhängiger Variable und `bdrms`, `lotsize`, `sqrm` und `country`  als unabhängigen Variablen. 
+    a) Bestimmen Sie die Regressionskoeffizienten und $p$-Werte der abhängigen Variablen und vergleichen Sie deren Einfluss innerhalb des Modells auf den vorhergesagten Wert für `price`. 
+    b) Ermitteln Sie, wie viel Varianz der abhängigen Variablen erklärt wird. 
+    c) Prüfen Sie die Residuen (graphisch) auf Normalverteilung und Homoskedastizität.
+    
+```{r}
+# Lösung zu Aufgabe 1...
+```
+
+2. Gegeben Sei das lineare Regressionsmodell aus Aufgabe 1.
+    a) Erstellen Sie jeweils einen Scatterplot zur Darstellung des Zusammenhangs zwischen vorhergesagtem Wert für `price` und Residuengröße.
+    b) Für einige Häuser liegt die Preisvorhersage des Makler-Modells um mehr als 100,000 EUR daneben. Heben Sie Häuser mit einer Residuengröße von mehr als 100 bzw. weniger als 100 hervor. Was könnten die Gründe für hohe Modellungenauigkeiten sein?
+    c) Lässt sich der $R^2$-Wert erhöhen, indem eine Lineartransformation einer der unabhängigen Variablen verwendet wird?
+
+```{r}
+# Lösung zu Aufgabe 2...
+```
+
+3. Stellen Sie den Zusammenhang zwischen `bdrms` und `price` grafisch dar. Überprüfen Sie, ob sich dieser Zusammenhang auch im Regressionsmodell aus Aufgabe 1 widerspiegelt. Erstellen Sie ein Regressionsmodell mit `bdrms` als alleiniger unabhängigen Variable. Vergleichen Sie die Regressionskoeffizienten mit dem des Modells aus Aufgabe 1 und interpretieren Sie die Unterschiede. 
+
+```{r}
+# Lösung zu Aufgabe 3...
+```
+------
+Datensatz:
+
+- http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/hprice.csv
