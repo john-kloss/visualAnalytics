@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.7.6)  24 APR 2017 22:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.7.6)  15 MAY 2017 22:42
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -633,7 +633,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
  [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 24.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
@@ -642,7 +642,7 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 24.
 
-<images/Selection_001.png, id=119, 821.0675pt x 283.0575pt>
+<images/Selection_001.png, id=110, 821.0675pt x 283.0575pt>
 File: images/Selection_001.png Graphic file (type png)
 
 <use images/Selection_001.png>
@@ -653,7 +653,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 30--36
 
  []
 
-<images/Selection_002.png, id=120, 781.92125pt x 393.47pt>
+<images/Selection_002.png, id=111, 781.92125pt x 393.47pt>
 File: images/Selection_002.png Graphic file (type png)
 
 <use images/Selection_002.png>
@@ -664,54 +664,67 @@ Underfull \hbox (badness 10000) in paragraph at lines 52--53
 
  []
 
-[3 <./images/Selection_001.png> <./images/Selection_002.png>]
+[2 <./images/Selection_001.png> <./images/Selection_002.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 76--79
 
  []
 
-<images/Selection_003.png, id=126, 406.51875pt x 439.6425pt>
+<images/Selection_003.png, id=117, 406.51875pt x 439.6425pt>
 File: images/Selection_003.png Graphic file (type png)
 
 <use images/Selection_003.png>
 Package pdftex.def Info: images/Selection_003.png used on input line 113.
 (pdftex.def)             Requested size: 216.81pt x 234.47183pt.
 
-<images/Selection_004.png, id=127, 411.5375pt x 468.75125pt>
+<images/Selection_004.png, id=118, 411.5375pt x 468.75125pt>
 File: images/Selection_004.png Graphic file (type png)
 
 <use images/Selection_004.png>
 Package pdftex.def Info: images/Selection_004.png used on input line 114.
 (pdftex.def)             Requested size: 216.81pt x 246.94923pt.
- [4]
+ [3]
 Underfull \hbox (badness 10000) in paragraph at lines 116--117
 
  []
 
-[5 <./images/Selection_003.png> <./images/Selection_004.png>]
+[4 <./images/Selection_003.png> <./images/Selection_004.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 216--221
 
  []
 
-[6]
+[5]
 Underfull \hbox (badness 10000) in paragraph at lines 241--244
 
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 307.
-[7] [8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 307.
+
+Underfull \hbox (badness 10000) in paragraph at lines 271--276
+
+ []
+
+[6] [7]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 361.
+ [8]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 361.
  (./summary.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 307.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 307.
-Package rerunfilecheck Info: File `summary.out' has not changed.
-(rerunfilecheck)             Checksum: 9D3DC95B42F8616DA341A35E35282EFC;1242.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 307.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 361.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 361.
+
+
+Package rerunfilecheck Warning: File `summary.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `summary.out':
+(rerunfilecheck)             Before: B468A3476C01F8F6907110EC85A15A39;1180
+(rerunfilecheck)             After:  B4CEA0369D277481AE382BCD158F3050;1409.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 361.
  ) 
 Here is how much of TeX's memory you used:
- 5938 strings out of 494901
- 86124 string characters out of 6178618
+ 5939 strings out of 494901
+ 86136 string characters out of 6178618
  173429 words of memory out of 5000000
- 9161 multiletter control sequences out of 15000+600000
+ 9160 multiletter control sequences out of 15000+600000
  8811 words of font info for 31 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  29i,6n,28p,184b,443s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -723,10 +736,10 @@ mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmsy10.pfb>
-Output written on summary.pdf (8 pages, 358671 bytes).
+Output written on summary.pdf (8 pages, 360526 bytes).
 PDF statistics:
- 187 PDF objects out of 1000 (max. 8388607)
- 163 compressed objects within 2 object streams
- 30 named destinations out of 1000 (max. 500000)
- 181 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 186 PDF objects out of 1000 (max. 8388607)
+ 162 compressed objects within 2 object streams
+ 32 named destinations out of 1000 (max. 500000)
+ 173 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,0 +1,85 @@
+---
+title: "Aufgabenblatt 5"
+fontsize: 11pt
+header-includes: \usepackage[german]{babel}
+output:
+  html_document: default
+  pdf_document:
+    highlight: haddock
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+
+```
+
+
+1. **(3 Votierungspunkte)** Entwickeln Sie einen Naive-Bayes-Klassifikator, der Spam-SMS erkennen kann. Der Lerndatensatz enthält für jede SMS den Text und das Label: Spam-SMS sind als `spam` und normale SMS als `ham` gekennzeichnet. Der Datensatz soll in eine Document-Term Matrix$^1$  umgewandelt werden, die als Input für den Naive-Bayes-Klassifikator dient. Berücksichtigen Sie bei der Aufgabe folgende Punkte:
+
+    - Ermitteln Sie die Anzahl von `spam` und `ham` Nachrichten.
+    - Führen Sie eine Wort-Tokenisierung$^2$ durch. Sie können dazu z.B. `tidytext::unnest_tokens()` verwenden.
+    - Wandeln sie alle Großbuchstaben in Kleinbuchstaben um und entfernen Sie Satzzeichen wie ".", "," und ";".
+    - Entfernen Sie Stoppwörter wie "and", "of" und "or" aus dem SMS-Text. Sie können dazu Stoppwörterbücher wie `tidytext::stop_words` oder `tm::stopwords()` verwenden.
+    - Ermitteln Sie die jeweils 10 am häufigsten vorkommenen Wörter für Spam- und Ham-SMS.
+    - Entfernen Sie Wörter, die insgesamt weniger als 2 mal in allen SMS vorkommen.
+    - Erstellen Sie eine Document-Term Matrix. Die Zeilen der Matrix entsprechen den SMS und die Spalten entsprechen allen Wörter, die in allen SMS vorkommen. Jeder Wert in der Matrix gibt an, wie oft ein bestimmtes Wort in einer bestimmten SMS vorkommt.
+    - Teilen Sie den Datensatz in eine Trainings- und und Testmenge im Verhältnis 70%:30% auf. Achten Sie darauf, dass die Verteilung von `spam` und `ham` in beiden Mengen ungefähr gleich ist. Verwenden Sie `set.seed()` zur Reproduzierbarkeit.
+    - Lernen Sie einen Naive-Bayes-Klassifikator auf der Trainingsmenge, z.B. mit `e1071:naiveBayes()`.
+    - Verwenden Sie das gelernte Modell zur Vorhersage von Spam in der Testmenge. Erstellen Sie eine Confusion Matrix und berechnen Sie Accuracy, Sensitivity und Specificity.
+    - Berechnen Sie die Verbesserung bzw. Verschlechterung bezüglich Accuracy, Sensitivity und Specificity des Modells im Vergleich zu einem simpleren Klassifikator, der für jede SMS stets die Mehrheitsklasse (`ham`) vorhersagen würde.
+
+Zeilen: SMS1,2,..
+Spalten: Wörter
+Tabelle zeigt an, ob Wort in SMS vorkommt. (TRUE,FALSE)
+```{r}
+
+```
+
+
+2. **(3 Votierungspunkte)** Bei der Generalversammlung der Vereinten Nationen kommen seit 1946 alle Mitgliedstaaten der Vereinten Nationen zusammen, um u.a. über Resolutionen zu beraten und abzustimmen. Derzeit gehören 193 Staaten den Vereinten Nationen an. Jeder dieser Mitgliedsstaaten hat bei Resolutionsabstimmungen zu Themen wie Abrüstung, internationale Sicherheit, humanitäre Hilfe und Menschenrechte im Rahmen der Generalversammlung genau eine Stimme.  
+Der Datensatz für diese Aufgabe enthält den vollständigen Verlauf von Abstimmungen bei der Generalversammlung jedes Landes.
+    a) Stellen Sie die Anzahl der zur Abstimmung befandenen Resolutionen jedes Jahres in einem Liniendiagramm dar. In welchem Jahr gab es die meisten Abstimmungen und wie viele waren es?
+    
+Kann man anhand der Stimmen anderer Länder das Votum von Deutschland vorhersagen?
+vote:1(ja),2(abstentino),3(nein)
+Zielvariable: ja/nein von D, in Spalten: votes der anderen Länder
+```{r}
+
+```
+    b) Berechnen Sie zwischen Deutschland und den USA für jedes Jahr den Anteil von gleichen Votierungen (Variable `vote`) für Resolutionen, im Folgenden `agreement` bezeichnet. Für das Jahr 2006 lag das Agreement zwischen beiden Staaten lediglich bei ca. 25% bei insgesamt 87 Abstimmungen. (_Hinweis: bis 1989 "Federal Republic of Germany"; ab 1989 "Germany"_) 
+```{r}
+
+```
+    c) Erstellen Sie ein lineares Regressionsmodell, welches das Agreement zwischen beiden Staaten anhand des Jahres vorhersagt (`agreement ~ year`). Interpretieren Sie den Trend und den p-Wert des Regressionskoeffizienten für `year`. Überprüfen Sie die Aussage des Modells graphisch. 
+```{r}
+
+```
+    d) Erstellen Sie eine Distanzmatrix zwischen allen Paaren von Staaten anhand ihrer Abstimmungshistorie. Berücksichtigen Sie dabei nur Staaten, die bei mindestens 70% aller Abstimmungen eine Stimme abgegeben haben. Ermitteln Sie die 5 Staaten, die am ähnlichsten bzw. am unähnlichsten zu Deutschland in Bezug auf die Abstimmungshistorie bei UN- Genralversammlungen sind.
+```{r}
+
+```
+    e) Teilen Sie den Datensatz in eine Trainings- und und Testmenge im Verhältnis 75%:25by% auf. Erstellen Sie einen $kNN$-Klassifikator mit $k=3$ (`caret::knn3Train()`) zur Vorhersage des Votums von Deutschland bei einer Abstimmung anhand der Votierungen der Länder ` 'Italy', 'Netherlands', 'United States of America', 'Israel', 'Cuba', 'India'`. Entfernen Sie dazu Abstimmungen, bei denen sich Deutschland enthalten hat (`vote=2` ("Abstain")) um eine binäre Zielvariable für `vote=1` ("Yes") und `vote=0` ("No") zu erhalten. 
+```{r}
+
+```
+    f) Erstellen Sie die Confusion Matrix und berechnen Sie die Accuracy für das Modell. Erstellen Sie auf denselben Daten ein logistisches Regressionsmodell (`glm(..., family = "binomial")`) und vergleichen Sie die Accuracy mit der des $kNN$-Klassifikators.
+
+
+```{r}
+
+```
+
+------
+Datensatz für Aufgabe 1: http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/spam.csv  
+(adaptiert von http://www.dt.fee.unicamp.br/~tiago/smsspamcollection/)
+
+Datensatz für Aufgabe 2: http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/UNVotes.rds  
+(adaptiert von https://dataverse.harvard.edu/dataset.xhtml?persistentId=hdl:1902.1/12379)  
+- Data Dictionary / Codebook: http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/UNVotes_Codebook.pdf
+
+$^1$ https://en.wikipedia.org/wiki/Document-term_matrix  
+$^2$ https://de.wikipedia.org/wiki/Tokenisierung, http://tidytextmining.com/tidytext.html

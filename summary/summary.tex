@@ -270,14 +270,57 @@ transformed to numbers
 
 Subspace search without clustering
 'Ranking Interesting Subspaces' (RIS)
-\subsection{ Visualization of Clustering Results}
+Subspace Search: Surfing - returns relevant subspaces ranked by
+'interestingness' (Compute the differences of the k nn-distance to the mean)\\
+$\rightarrow$ prefer subspace with high variance and avoid high redundancy\\
 
-\subsection{Applications}
+Paradigms:
+\begin{itemize}
+	\item Cell-based (CLIQUE)
+	\item Density-based (SUBCLUE)
+	\item Clustering-based - steered by global parameters, e.g. number of clusters (Proculus)
+\end{itemize}
+
+\subsection{ Visualization of Clustering Results}
+A multitude of information needs to be conveyed:
+\begin{itemize}
+\item the overlapping dimensions of subspaces,
+\item the overlapping subspaces,
+\item the membership of objects to subspaces.
+\end{itemize}
+Major techniques:
+\begin{itemize}
+\item Parallel coordinates
+\item Scatterplot visualizations
+\item Heatmaps
+\item Linked views (overview and detailed visualizations)
+\item Matrix-based visualization
+\end{itemize}
+
+General workflow: \\
+HD Data $\Rightarrow$ Interesting Subspaces $\Rightarrow$ Redundancy Reduced View $\Rightarrow$ Cluster Colored View
 \subsection{ Evaluation}
+Interisting are small clusters with high entropy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Clustering Validation}
+
+\subsection{Validation of Clustering Results}
+How does she know whether the results are good?
+Cluster purity measures are used
+\begin{itemize}
+\item Silhoutte coefficient
+	\begin{itemize}
+	\item Relation of distance to own cluster and to other clusters
+	\item is in between -1 and 1 
+	\end{itemize}
+\item Centroid measure
+\item Grid-based measures
+\end{itemize}
+
+\subsection{Introduction}
+\subsection{Visualization of Clustering Results}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

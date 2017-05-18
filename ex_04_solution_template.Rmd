@@ -73,7 +73,7 @@ summary(fitc)$coef
 ```{r}
 vif(lm(price ~ bdrms + lotsize + sqrm + country, data=hprice))
 ```
-    c) Prüfen Sie die Residuen (graphisch) auf Normalverteilung und Homoskedastizität.
+c) Prüfen Sie die Residuen (graphisch) auf Normalverteilung und Homoskedastizität.
 ```{r}
 hprice %>%
   ggplot(aes(price, bdrms))+
