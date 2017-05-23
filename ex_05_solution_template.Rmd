@@ -17,7 +17,8 @@ knitr::opts_chunk$set(echo = TRUE,
 library(dplyr)
 library(stringr)
 library(tidytext)
-
+library(tidyr)
+library(e1071)
 ```
 
 **Block 1**: Entwickeln Sie einen Naive-Bayes-Klassifikator, der Spam-SMS erkennen kann. Der Lerndatensatz enthält für jede SMS den Text und das Label: Spam-SMS sind als `spam` und normale SMS als `ham` gekennzeichnet. Der Datensatz soll in eine Document-Term Matrix$^1$  umgewandelt werden, die als Input für den Naive-Bayes-Klassifikator dient.
@@ -55,16 +56,17 @@ for(i in 1:nrow(h)){
 names(dtm) <- h[,2]
 
 for(i in 1:nrow(spam)){
-  
   j <- 1;
-
   while(!grepl(i+1,dimnames(spam[j,])[[1]])){
+    if(j>nrow(spam)){
+      break;
+    }
     #check if column exists
     if(!is.null(dtm[1,spam[i,2]])){
           dtm[1,spam[i,2]] <- TRUE
     }
+    j <- j+1
   }
-  dtm <- cbind(dtm, 1)
 }
 
 s <-  as.data.frame(table(filter(spamJoin, type=="spam")))
@@ -77,6 +79,16 @@ s <- filter(s, Freq>1)
 3. Teilen Sie den Datensatz in eine Trainings- und und Testmenge im Verhältnis 70%:30% auf. Achten Sie darauf, dass die Verteilung von `spam` und `ham` in beiden Mengen ungefähr gleich ist. Verwenden Sie `set.seed()` zur Reproduzierbarkeit. Lernen Sie einen Naive-Bayes-Klassifikator auf der Trainingsmenge, z.B. mit `e1071:naiveBayes()`. Verwenden Sie das gelernte Modell zur Vorhersage von Spam in der Testmenge. Erstellen Sie eine Confusion Matrix und berechnen Sie Accuracy, Sensitivity und Specificity. Berechnen Sie die Verbesserung bzw. Verschlechterung bezüglich Accuracy, Sensitivity und Specificity des Modells im Vergleich zu einem simpleren Klassifikator, der für jede SMS stets die Mehrheitsklasse (`ham`) vorhersagen würde.
 
 ```{r}
+spamspam <- filter(spam, type=="spam")
+spamham <- filter(spam, type=="ham")
+
+training <- spamspam[(1:round(nrow(spamspam)*0.7)),] 
+training <- rbind(training, spamham[(1:round(nrow(spamham)*0.7)),])
+test <- spamspam[((round(nrow(spamspam)*0.7))+1):nrow(spamspam),]
+test <- rbind(test, spamham[((round(nrow(spamham)*0.7))+1):nrow(spamham),])
+
+bayes <- e1071::naiveBayes(training, training$type)
+
 
 ```
 
