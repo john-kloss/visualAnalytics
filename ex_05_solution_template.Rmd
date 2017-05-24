@@ -19,7 +19,9 @@ library(stringr)
 library(tidytext)
 library(tidyr)
 library(e1071)
+library(caret)
 ```
+
 
 **Block 1**: Entwickeln Sie einen Naive-Bayes-Klassifikator, der Spam-SMS erkennen kann. Der Lerndatensatz enthält für jede SMS den Text und das Label: Spam-SMS sind als `spam` und normale SMS als `ham` gekennzeichnet. Der Datensatz soll in eine Document-Term Matrix$^1$  umgewandelt werden, die als Input für den Naive-Bayes-Klassifikator dient.
 
@@ -88,8 +90,8 @@ test <- spamspam[((round(nrow(spamspam)*0.7))+1):nrow(spamspam),]
 test <- rbind(test, spamham[((round(nrow(spamham)*0.7))+1):nrow(spamham),])
 
 bayes <- e1071::naiveBayes(training, training$type)
-
-
+pred <- predict(bayes, test$type)
+confusionMatrix(pred, reference=test$type)
 ```
 
 ------
@@ -98,7 +100,40 @@ bayes <- e1071::naiveBayes(training, training$type)
 Der Datensatz für diese Aufgabe enthält den vollständigen Verlauf von Abstimmungen bei der Generalversammlung jedes Landes. Ist es möglich vorherzusagen, ob Deutschland bei einer Resolutionsabstimmung mit "Ja" oder "Nein" stimmt?
 
 4. Stellen Sie die Anzahl der zur Abstimmung befandenen Resolutionen jedes Jahres in einem Liniendiagramm dar. In welchem Jahr gab es die meisten Abstimmungen und wie viele waren es? Berechnen Sie zwischen Deutschland und den USA für jedes Jahr den Anteil von gleichen Votierungen (Variable `vote`) für Resolutionen, im Folgenden `agreement` bezeichnet. Für das Jahr 2006 lag das Agreement zwischen beiden Staaten lediglich bei ca. 25% bei insgesamt 87 Abstimmungen. (_Hinweis: bis 1989 "Federal Republic of Germany"; ab 1989 "Germany"_) 
+```{r}
+
+votes <- readRDS(str_c(dirname(getwd()), "/visualAnalytics/Data/UNVotes.rds"))
+a <- 0
+for(i in (1946:2014)){
+  a <- c(a,nrow(filter(votes, grepl(i,date))))
+}
+2014-1946
+plot(1946:2015, a, type = "l")
+
+max(a)
+1946+which(a == max(a))-2
+
+us <- filter(votes, country=="United States of America")
+ger <- filter(votes, country=="Federal Republic of Germany" | country=="Germany")
+tmp <- vector()
+results <- vector()
+
+for(i in 1973:2014){
+  currus <- filter(us, grepl(i,date))
+  currger <- filter(ger, grepl(i,date))
+  for(j in 1:nrow(currus)){
+    id <- as.numeric(currus[j,1])
+    tmp <- c(tmp,filter(currus, rcid==id)[1,3] == filter(currger, rcid==id)[1,3])
+  }
+  results <- c(results,length(which(tmp==TRUE))/nrow(currus))
+  tmp <- vector()
+}
+results
+  
+
+```
 5. Erstellen Sie ein lineares Regressionsmodell, welches das Agreement zwischen beiden Staaten anhand des Jahres vorhersagt (`agreement ~ year`). Interpretieren Sie den Trend und den p-Wert des Regressionskoeffizienten für `year`. Überprüfen Sie die Aussage des Modells graphisch. Erstellen Sie eine Distanzmatrix zwischen allen Paaren von Staaten anhand ihrer Abstimmungshistorie. Berücksichtigen Sie dabei nur Staaten, die bei mindestens 70% aller Abstimmungen eine Stimme abgegeben haben. Ermitteln Sie die 5 Staaten, die am ähnlichsten bzw. am unähnlichsten zu Deutschland in Bezug auf die Abstimmungshistorie bei UN- Genralversammlungen sind.
+
 6. Teilen Sie den Datensatz in eine Trainings- und und Testmenge im Verhältnis 75%:25% auf. Erstellen Sie einen $kNN$-Klassifikator mit $k=3$ (`caret::knn3Train()`) zur Vorhersage des Votums von Deutschland bei einer Abstimmung anhand der Votierungen der Länder ` 'Italy', 'Netherlands', 'United States of America', 'Israel', 'Cuba', 'India'`. Entfernen Sie dazu Abstimmungen, bei denen sich Deutschland enthalten hat (`vote=2` ("Abstain")) um eine binäre Zielvariable für `vote=1` ("Yes") und `vote=0` ("No") zu erhalten. Erstellen Sie die Confusion Matrix und berechnen Sie die Accuracy für das Modell. Erstellen Sie auf denselben Daten ein logistisches Regressionsmodell (`glm(..., family = "binomial")`) und vergleichen Sie die Accuracy mit der des $kNN$-Klassifikators.
 
 
