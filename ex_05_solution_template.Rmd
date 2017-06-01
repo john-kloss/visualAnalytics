@@ -88,7 +88,7 @@ training <- spamspam[(1:round(nrow(spamspam)*0.7)),]
 training <- rbind(training, spamham[(1:round(nrow(spamham)*0.7)),])
 test <- spamspam[((round(nrow(spamspam)*0.7))+1):nrow(spamspam),]
 test <- rbind(test, spamham[((round(nrow(spamham)*0.7))+1):nrow(spamham),])
-
+#create data partition function
 bayes <- e1071::naiveBayes(training, training$type)
 pred <- predict(bayes, test$type)
 confusionMatrix(pred, reference=test$type)
@@ -103,15 +103,15 @@ Der Datensatz für diese Aufgabe enthält den vollständigen Verlauf von Abstimm
 ```{r}
 
 votes <- readRDS(str_c(dirname(getwd()), "/visualAnalytics/Data/UNVotes.rds"))
-a <- 0
+a <- vector()
 for(i in (1946:2014)){
   a <- c(a,nrow(filter(votes, grepl(i,date))))
 }
-2014-1946
-plot(1946:2015, a, type = "l")
+
+plot(1946:2014, a, type = "l")
 
 max(a)
-1946+which(a == max(a))-2
+1946+which(a == max(a))-1
 
 us <- filter(votes, country=="United States of America")
 ger <- filter(votes, country=="Federal Republic of Germany" | country=="Germany")

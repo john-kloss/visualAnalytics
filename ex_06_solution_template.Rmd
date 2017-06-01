@@ -1,0 +1,51 @@
+---
+title: "Aufgabenblatt 6"
+fontsize: 11pt
+header-includes: \usepackage[german]{babel}
+output:
+  html_document: default
+  pdf_document:
+    highlight: haddock
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+_Welche Faktoren erklären übermäßigen Alkoholkonsum bei Schülern?_ Der Datensatz  für das Aufgabenblatt stammt von einer Umfrage unter Schülern, die Mathematik- und Portugiesisch-Kurse besuchten und enthält viele interessante Angaben zu deren Soziodemografie, Lebensumständen und Lernerfolg.  
+Die ordinalskalierten Variablen `Dalc` und `Walc` geben Aufschluss über den Alkoholkonsum der Schüler an Werktagen und am Wochenende. Erstellen Sie eine binäre Zielvariable `alc_prob` wie folgt:
+
+```{r, echo=T, eval=T}
+library(stringr)
+library(readr)
+library(dplyr)
+# (Pfad anpassen)
+student <- read_csv(str_c(dirname(getwd()), "/Data/student_alc.csv"))
+student <- student %>%
+  mutate(alc_prob = ifelse(Dalc + Walc >= 6, "alc_p", "no_alc_p"))
+```
+
+1. Berechnen Sie den Gini-Index für die Zielvariable `alc_prob` und den _Gini Index_ für jede Variable in Bezug auf `alc_prob`. Ermitteln Sie die 5 Variablen mit dem höchsten _Gini Gain_.
+
+```{r}
+# Aufgabe 1
+```
+
+2. Lernen Sie 2 verschiedene Entscheidungsbäume mit `alc_prob` als Zielvariable. Für den ersten Baum sollen Knoten solange weiter partitioniert werden, bis die Klassenverteilung aller entstehenden Blattknoten rein ist. Für den zweiten Baum sollen Knoten mit einer Kardinalität von weniger als 20 Instanzen nicht weiter partitioniert werden. Ermitteln Sie die Qualität der Bäume, in dem Sie Sensitivität (_True Positive Rate_) und Spezifität (_True Negative Rate_) bzgl. eines 70%:30%-Splits in Trainings- und Testmenge berechnen. Stellen Sie die Entscheidungsbäume graphisch dar und diskutieren Sie die Unterschiede in Bezug auf die Qualitätsmaße.
+
+```{r}
+# Aufgabe 2
+```
+
+3. Erstellen Sie mithilfe von `randomForest::randomForest()` einen Random Forest mit 200 Bäumen. Als Kandidaten für einen Split innerhalb eines Baums soll jeweils ein Random Sample von 5 Variablen gezogen werden. Berechnen Sie Accuracy, Sensitivität und Spezifität bzgl. der Out-of-the-Bag-Instanzen und stellen Sie die wichtigsten Variablen (`?importance`) dar.
+
+```{r}
+# Aufgabe 3
+```
+------
+Datensatz: http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/student_alc.csv  
+(Quelle: https://www.kaggle.com/uciml/student-alcohol-consumption)
