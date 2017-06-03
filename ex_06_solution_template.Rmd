@@ -16,36 +16,117 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE)
 ```
 
-_Welche Faktoren erklären übermäßigen Alkoholkonsum bei Schülern?_ Der Datensatz  für das Aufgabenblatt stammt von einer Umfrage unter Schülern, die Mathematik- und Portugiesisch-Kurse besuchten und enthält viele interessante Angaben zu deren Soziodemografie, Lebensumständen und Lernerfolg.  
-Die ordinalskalierten Variablen `Dalc` und `Walc` geben Aufschluss über den Alkoholkonsum der Schüler an Werktagen und am Wochenende. Erstellen Sie eine binäre Zielvariable `alc_prob` wie folgt:
+_Welche Faktoren erkl?ren ?berm??igen Alkoholkonsum bei Sch?lern?_ Der Datensatz  f?r das Aufgabenblatt stammt von einer Umfrage unter Sch?lern, die Mathematik- und Portugiesisch-Kurse besuchten und enth?lt viele interessante Angaben zu deren Soziodemografie, Lebensumst?nden und Lernerfolg.  
+Die ordinalskalierten Variablen `Dalc` und `Walc` geben Aufschluss ?ber den Alkoholkonsum der Sch?ler an Werktagen und am Wochenende. Erstellen Sie eine bin?re Zielvariable `alc_prob` wie folgt:
 
 ```{r, echo=T, eval=T}
 library(stringr)
 library(readr)
 library(dplyr)
+library(ineq)
 # (Pfad anpassen)
-student <- read_csv(str_c(dirname(getwd()), "/Data/student_alc.csv"))
+student <- read_csv(str_c(dirname(getwd()), "/visualAnalytics/Data/student_alc.csv"))
 student <- student %>%
   mutate(alc_prob = ifelse(Dalc + Walc >= 6, "alc_p", "no_alc_p"))
 ```
 
-1. Berechnen Sie den Gini-Index für die Zielvariable `alc_prob` und den _Gini Index_ für jede Variable in Bezug auf `alc_prob`. Ermitteln Sie die 5 Variablen mit dem höchsten _Gini Gain_.
+1. Berechnen Sie den Gini-Index f?r die Zielvariable `alc_prob` und den _Gini Index_ f?r jede Variable in Bezug auf `alc_prob`. Ermitteln Sie die 5 Variablen mit dem h?chsten _Gini Gain_.
 
 ```{r}
 # Aufgabe 1
+
+
+  student <- mutate(student, sex = as.numeric(factor(sex)),
+                    famsize = as.numeric(factor(famsize)),
+                    Pstatus = as.numeric(factor(Pstatus)),
+                    Mjob = as.numeric(factor(Mjob)),
+                    Fjob = as.numeric(factor(Fjob)),
+                    reason = as.numeric(factor(reason)),
+                    guardian = as.numeric(factor(guardian)),
+                    schoolsup = as.numeric(factor(schoolsup)),
+                    internet = as.numeric(factor(internet)),
+                    paid = as.numeric(factor(paid)),
+                    activities = as.numeric(factor(activities)),
+                    nursery = as.numeric(factor(nursery)),
+                    higher = as.numeric(factor(higher)),
+                    romantic = as.numeric(factor(romantic)),
+                    famsup = as.numeric(factor(famsup)),
+                    alc_prob = as.numeric(factor(alc_prob)))
+
+gini_alc <- 1 - ((nrow(filter(student, alc_prob=="1"))/nrow(student))^2 + (nrow(filter(student, alc_prob=="2"))/nrow(student))^2)
+
+results <- vector()
+for(col in names(student)){ #iterate over columns
+  gini <- 0
+  for(a in levels(factor(student[[col]]))){ #iterate over levels
+    gini <- gini + (1 - ((nrow(filter(filter(student, alc_prob==2, student[[col]]==a)))/nrow(filter(student, student[[col]]==a)))^2 + (nrow(filter(filter(student, alc_prob==1, student[[col]]==a)))/nrow(filter(student, student[[col]]==a)))^2)) * 
+      nrow(filter(student, student[[col]]==a)) / nrow(student)
+    
+  }
+  gini <- gini_alc-gini
+  results <- c(results, gini)
+}
+order(results)
+# alc_prob, health, Dalc, goout, absences
 ```
 
-2. Lernen Sie 2 verschiedene Entscheidungsbäume mit `alc_prob` als Zielvariable. Für den ersten Baum sollen Knoten solange weiter partitioniert werden, bis die Klassenverteilung aller entstehenden Blattknoten rein ist. Für den zweiten Baum sollen Knoten mit einer Kardinalität von weniger als 20 Instanzen nicht weiter partitioniert werden. Ermitteln Sie die Qualität der Bäume, in dem Sie Sensitivität (_True Positive Rate_) und Spezifität (_True Negative Rate_) bzgl. eines 70%:30%-Splits in Trainings- und Testmenge berechnen. Stellen Sie die Entscheidungsbäume graphisch dar und diskutieren Sie die Unterschiede in Bezug auf die Qualitätsmaße.
+2. Lernen Sie 2 verschiedene Entscheidungsb?ume mit `alc_prob` als Zielvariable. F?r den ersten Baum sollen Knoten solange weiter partitioniert werden, bis die Klassenverteilung aller entstehenden Blattknoten rein ist. F?r den zweiten Baum sollen Knoten mit einer Kardinalit?t von weniger als 20 Instanzen nicht weiter partitioniert werden. Ermitteln Sie die Qualit?t der B?ume, in dem Sie Sensitivit?t (_True Positive Rate_) und Spezifit?t (_True Negative Rate_) bzgl. eines 70%:30%-Splits in Trainings- und Testmenge berechnen. Stellen Sie die Entscheidungsb?ume graphisch dar und diskutieren Sie die Unterschiede in Bezug auf die Qualit?tsma?e.
 
 ```{r}
-# Aufgabe 2
+library(tree)
+library(caret)
+fit1 <- tree(alc_prob ~ ., data = student)
+plot(fit1)
+
+
+fit2 <- tree(alc_prob ~ ., data = student, control=tree.control(nobs = nrow(student), minsize = 20))
+plot(fit2)
+
+set.seed(123)
+trainIndex <- sample(c(FALSE,TRUE), size = nrow(student), prob = c(.3,.7), replace = TRUE)
+train <- student[trainIndex, ] 
+test <- student[!trainIndex, ]
+
+fitTest <- (tree(alc_prob ~ ., data = train))
+pred <- predict(fitTest)
+tab <- table(actual = test$alc_prob, predicted = round(pred[1:114]))
+
+print("SensitivitÃ¤t")
+tab[2,2]/(tab[2,1]+tab[2,2])
+
+print("SpezifitÃ¤t")
+tab[1,1]/(tab[1,1]+tab[1,2])
+
+fitTest <- tree(alc_prob ~ ., data = student, control=tree.control(nobs = nrow(student), minsize = 20))
+pred <- predict(fitTest)
+tab <- table(actual = test$alc_prob, predicted = round(pred[1:114]))
+
+print("SensitivitÃ¤t")
+tab[2,2]/(tab[2,1]+tab[2,2])
+
+print("SpezifitÃ¤t")
+tab[1,1]/(tab[1,1]+tab[1,2])
+
 ```
 
-3. Erstellen Sie mithilfe von `randomForest::randomForest()` einen Random Forest mit 200 Bäumen. Als Kandidaten für einen Split innerhalb eines Baums soll jeweils ein Random Sample von 5 Variablen gezogen werden. Berechnen Sie Accuracy, Sensitivität und Spezifität bzgl. der Out-of-the-Bag-Instanzen und stellen Sie die wichtigsten Variablen (`?importance`) dar.
+3. Erstellen Sie mithilfe von `randomForest::randomForest()` einen Random Forest mit 200 B?umen. Als Kandidaten f?r einen Split innerhalb eines Baums soll jeweils ein Random Sample von 5 Variablen gezogen werden. Berechnen Sie Accuracy, Sensitivit?t und Spezifit?t bzgl. der Out-of-the-Bag-Instanzen und stellen Sie die wichtigsten Variablen (`?importance`) dar.
 
 ```{r}
-# Aufgabe 3
+library(randomForest)
+rf <- randomForest::randomForest(alc_prob ~ . , data=train, ntree=200, keep.forest=TRUE, mtry=5)
+pred <- predict(rf)
+tab <- table(actual = test$alc_prob, predicted = round(pred[1:114]))
+
+print("SensitivitÃ¤t")
+tab[2,2]/(tab[2,1]+tab[2,2])
+
+print("SpezifitÃ¤t")
+tab[1,1]/(tab[1,1]+tab[1,2])
+
+print("Accuracy")
+(tab[1,1]+tab[2,2])/nrow(test)
+
+rf$importance
 ```
-------
 Datensatz: http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/student_alc.csv  
 (Quelle: https://www.kaggle.com/uciml/student-alcohol-consumption)
