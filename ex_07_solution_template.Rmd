@@ -1,0 +1,142 @@
+---
+title: "Aufgabenblatt 7"
+fontsize: 11pt
+header-includes: \usepackage[german]{babel}
+output:
+  html_document: default
+  pdf_document:
+    highlight: tango
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, # -> Sollen Code Chunks im gerenderten Dokument angezeigt werden?
+                      eval = TRUE, # -> Sollen R Code Chunks ausgeführt werden?
+                      warning = FALSE, # -> Warnungen sollten nur am Ende zum Rendern auf FALSE gesetzt werden
+                      message = FALSE) # -> Hinweise sollten nur am Ende zum Rendern auf FALSE gesetzt werden
+
+library(dplyr)
+library(arules)
+```
+
+1. Gegeben sei die in Tabelle 1 dargestellte Historie von Warenkorb-Transaktionen eines Supermarkts. Auf diesen Datensatz soll  der Apriori-Algorithmus mit $minSup=40\,\%$ angewendet werden.
+
+    a) Zeichnen Sie ein Itemset-Gitter, das alle möglichen Itemsets der in Tabelle 1 dargestellten Transaktionen darstellt.
+    b) Beschriften Sie jeden Knoten im Gitter mit den folgenden Buchstaben:  
+        - **H**: Das Itemset ist häufig (Frequent Itemset).
+        - **N**: Das Itemset wird als Kandidat-Itemset erstellt, aber erfüllt nicht die $minSup$-Untergrenze.
+        - **/**: Das Itemset wird nicht als Kandidat-Itemset erstellt.
+    c) Bestimmen Sie die Anzahl von Frequent Itemsets.
+    d) Bestimmen Sie den _Pruning Count_ des Apriori-Alorithmus. Der Pruning Count is definiert als Anzahl der Kandidat-Itemsets, die entweder nicht generiert werden oder entfernt werden, da mindestens eines der Itemsets ihrer Untermenge nicht häufig ist.
+    e) Bestimmen Sie den _False Alarm Count_ des Apriori-Algorithmus. Der False Alarm Count is definiert als Anzahl der Kandidat-Itemsets, die zwar generiert werden, aber nach Berechnung des Support Counts nicht häufig sind.
+    f) Kennzeichnen Sie im Itemset-Gitter die _closed frequent_ und _maximal frequent_ Itemsets und bestimmen sie jeweils deren Anzahl.
+
+```{r, echo = FALSE, eval = TRUE}
+set.seed(1)
+knitr::kable(
+  tibble(
+    Items = c("a,b,d,e",
+              "a,b,c",
+              "b,d,e",
+              "a,c,d,e",
+              "a,b,c,e",
+              "a,b,e",
+              "a,c",
+              "b,c,d",
+              "a,d,e",
+              "a,b,c,d,e")
+  ) %>%
+    mutate(Tid = sprintf("%05d", base::sample(10000, 10))) %>%
+    arrange(Tid) %>%
+    select(Tid, Items),
+  caption = "Warenkorb-Transaktionen für Aufgabe 1"
+)
+
+```
+
+```{r}
+
+
+
+```
+
+
+2. Ein KFZ-Versicherer möchte zur Verbesserung der Vertriebseffizienz häufig zusammen gewählte Zusatzleistungen seiner Versicherungen auf Grundlage von historischen Transaktionsdaten extrahieren. Beim Zusammenstellen einer Versicherung wählt der Kunde bei jeder Zusatzleistung zwischen verschiedenen Optionen aus. Die insgesamt acht Zusatzleistungen und deren Optionen sind in Tabelle 2 erklärt.
+
+    a) Bestimmen Sie die am häufigsten gewählte Option je Zusatzleistung. 
+    b) Lernen Sie mit dem Apriori-Algorithmus Assoziationsregeln für häufig gewählte KFZ-Versicherungsoptionen. Eine Regel ist häufig, wenn ihr Support mindestens 0,05 und ihre Confidence mindestens 0,5 beträgt.
+    c) Extrahieren Sie die drei Regeln mit dem höchsten Support.
+    d) Extrahieren Sie die drei Regeln mit der höchsten Confidence.
+    e) Extrahieren Sie die drei Regeln mit dem höchsten Lift.
+    f) Bestimmen Sie die Menge aller maximal frequent Itemsets. Berechnen Sie den Anteil von maximal frequent Itemsets in Bezug auf die Anzahl aller frequent Itemsets.
+
+<!-- \pagebreak -->
+
+| Zusatzleistung             | Optionen      | Beschreibung                                                                         |  
+|:---------------------------|:--------------|:-------------------------------------------------------------------------------------|
+| `Collision`                | `{0,1,2}`     | Maximalhöhe des erstatteten Fahrzeugschadens (Unfall)                                |
+| `Destruction`              | `{0,1}`       | Erstattung von Totalschäden (Zerstörung)                                             |
+| `Injury`                   | `{1,2,3,4}`   | Maximalhöhe erstatteter Arztkosten                                                   |
+| `Sound_System`             | `{1,2,3}`     | Max. erstatteter Wert beschädigter Soundsysteme                                      |
+| `Towing`                   | `{0,1}`       | Erstattung von Leistungen eines Automobilklubs (z.B. Abschleppen oder Reifenwechsel) |
+| `Theft`                    | `{1,2,3}`     | Maximalhöhe erstatteter Diebstahlschäden                                             |
+| `Underinsured_` `Motorist` | `{0,1,2,3,4}` | Maximalhöhe erstatteter Kosten für unterversicherten Unverfallverursacher            |
+
+Table: Beschreibung der Zusatzleistungen der KFZ-Versicherungen für Aufgabe 2
+
+```{r}
+library(stringr)
+ins <- readRDS(str_c(dirname(getwd()), "/visualAnalytics/Data/arules_vehicle_insurance.rds"))
+
+for (i in colnames(ins)){
+  print(sum(ins[[i]]))
+  print(i)
+}
+ins <- sapply(as.data.frame(ins), as.logical)
+
+apr<-apriori(ins, parameter=list(supp=0.05, conf=0.5))
+inspect(head(apr, n = 3, by = "support"))
+inspect(head(apr, n = 3, by = "confidence"))
+inspect(head(apr, n = 3, by = "lift"))
+
+length(is.maximal(apr)[is.maximal(apr)==TRUE])/length(apriori(ins, parameter=list(supp=0.05, conf=0.5, target="frequent itemsets")))
+
+```
+
+
+3. Ein großes Krankenhaus möchte Ursachen das Nichterscheinen bei Arztterminen identifizieren. Aus historischen Daten zu 300.000 Patienten stehen verschiedene Information zur Verfügung, darunter Angaben zu Geschlecht, Alter, Diabetes, Alkoholsucht, Bluthochdruck, Behinderung, Rauchgewohnheiten, [Sozialhilfebezug](https://en.wikipedia.org/wiki/Bolsa_Fam%C3%ADlia), Tuberkulose, SMS-Terminerinnerung und Wartezeit. 
+
+    a) Finden Sie mithilfe des Apriori-Algorithmus alle closed frequent Itemsets mit einem Mindestsupport von 0,001. Bestimmen Sie die Kardinalität dieser Menge.
+    b) Generieren Sie auf Grundlage der closed frequent Itemsets die Menge aller Assoziationsregeln mit mind. 30% Confidence. Wie viele Regeln bleiben übrig, wenn Sie die _RHS_ (Right Hand Side) auf `{No_Show}` beschränken, d.h. ausschließlich Regeln der Form ($X \longrightarrow$ `{No_Show}`) finden? Bestimmen Sie die 3 Regeln mit dem höchsten Lift.
+    c) Einige der in b) generierten Regeln sind nicht aussagekräftig bezüglich `No_Show`. Welche Regeln sind das (Hinweis: Lift)? Warum ist in diesem Fall 30% kein geigneter Wert für die Mindest-Confidence einer Regel?
+
+```{r}
+hosp <- read.csv(str_c(dirname(getwd()), "/visualAnalytics/Data/arules_no-show-300k.csv"))
+hosp <- sapply(as.data.frame(hosp), as.logical)
+
+rules1<-apriori(hosp, parameter=list(supp=0.001, target="closed frequent itemsets"))
+length(rules1)
+
+
+rules2<-apriori(hosp, parameter=list(supp=0.001, conf=0.3),appearance = list(rhs = "No_Show", default="lhs"))
+inspect(head(rules2, n = 3, by = "lift"))
+length(rules2)
+
+#alle Regeln mit dem lift Wert um 1
+#0.3 ist zu niedrig, um Zufälle auszuschließen, da viele Elemente sehr häufig auftreten
+
+```
+
+------
+Zum Lösen der Aufgaben 2 und 3 bietet sich das Package `arules` an.
+
+- `arules`-Tutorial: http://michael.hahsler.net/research/arules_RUG_2015/demo/
+- "Introduction to `arules`": https://cran.r-project.org/web/packages/arules/vignettes/arules.pdf
+
+Datensätze:
+
+- Aufgabe 2: http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/arules_vehicle_insurance.rds    
+(adaptiert von https://www.kaggle.com/c/allstate-purchase-prediction-challenge/data)
+- Aufgabe 3: http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/arules_no-show-300k.csv    
+(adaptiert von https://www.kaggle.com/joniarroba/noshowappointments)
+
