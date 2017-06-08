@@ -113,7 +113,7 @@ tab[1,1]/(tab[1,1]+tab[1,2])
 
 ```{r}
 library(randomForest)
-rf <- randomForest::randomForest(alc_prob ~ . , data=train, ntree=200, keep.forest=TRUE, mtry=5)
+rf <- randomForest::randomForest(alc_prob ~ . , data=student, ntree=200, keep.forest=TRUE, mtry=5)
 pred <- predict(rf)
 tab <- table(actual = test$alc_prob, predicted = round(pred[1:114]))
 

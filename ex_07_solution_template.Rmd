@@ -51,12 +51,9 @@ knitr::kable(
     select(Tid, Items),
   caption = "Warenkorb-Transaktionen für Aufgabe 1"
 )
-
 ```
 
 ```{r}
-
-
 
 ```
 
@@ -101,6 +98,7 @@ inspect(head(apr, n = 3, by = "lift"))
 
 length(is.maximal(apr)[is.maximal(apr)==TRUE])/length(apriori(ins, parameter=list(supp=0.05, conf=0.5, target="frequent itemsets")))
 
+
 ```
 
 
@@ -124,6 +122,7 @@ length(rules2)
 
 #alle Regeln mit dem lift Wert um 1
 #0.3 ist zu niedrig, um Zufälle auszuschließen, da viele Elemente sehr häufig auftreten
+
 
 ```
 
