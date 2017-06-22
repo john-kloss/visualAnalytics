@@ -1,0 +1,240 @@
+---
+title: "Aufgabenblatt 8"
+fontsize: 11pt
+header-includes: \usepackage[german]{babel}
+output:
+  html_document: default
+  pdf_document:
+    highlight: tango
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, # -> Sollen Code Chunks im gerenderten Dokument angezeigt werden?
+                      eval = TRUE, # -> Sollen R Code Chunks ausgef?hrt werden?
+                      warning = FALSE, # -> Warnungen sollten nur am Ende zum Rendern auf FALSE gesetzt werden
+                      message = FALSE) # -> Hinweise sollten nur am Ende zum Rendern auf FALSE gesetzt werden
+```
+
+1. Der von der US-amerikanischen National Highway Transportation Safety Administration veröffentlichte _Fatal-Accidents_-Datensatz enthält Informationen zu allen 3.276 Verkehrsunfällen mit Todesopfern, die sich im Juni 2007 ereignet haben. 
+    a) Stellen Sie die Verteilung der Variablen jeweils in einem Boxplot dar und begründen Sie, warum eine Standardisierung (z-Transformation) der Variablen sinnvoll ist. 
+    b) Führen Sie eine Hauptkomponentenanalyse durch und stellen Sie die Projektionen der Daten auf den ersten beiden Hauptkomponenten in einem Scatter Plot dar. 
+    c) Bei der Betrachtung des Scatter Plots fällt auf, dass es vereinzelte Ausreißer gibt, die weit vom Koordinatenursprung entfernt sind. Bestimmen Sie die 5 Punkte mit dem durchschnittlich höchsten Abstand zu allen anderen Punkten in Bezug auf die ersten beiden Hauptkomponenten. Versuchen Sie Gründe für den großen Abstand dieser Punkte zu dem Rest zu finden.
+
+Table: Beschreibung der Variablen des "Accidents"-Datensatzes
+
+| Variable      | Beschreibung                                 |  
+|:--------------|:---------------------------------------------|
+| `VE_TOTAL`    | Anzahl involvierter Fahrzeuge                |
+| `PERSONS`     | Anzahl involvierter Personen                 |
+| `PEDS `       | Anzahl involvierter Fußgänger                |
+| `NO_LANES`    | Anzahl betroffener Fahrspuren                |
+| `SP_LIMIT`    | Geschwindigkeitsbegrenzung am Unfallort      |
+| `FATALS `     | Anzahl verstorbener Personen                 |
+| `DRUNK_DR`    | Anzahl involvierter alkoholisierter Fahrer   |
+
+
+```{r}
+library(ggplot2)
+library(tibble)
+library(fields)
+library(distances)
+#a
+acc <- read.csv(str_c(dirname(getwd()), "/visualAnalytics/Data/accidents_VA.csv"))
+boxplot(acc$VE_TOTAL)
+boxplot(acc$PERSONS)
+boxplot(acc$PEDS)
+boxplot(acc$NO_LANES)
+boxplot(acc$SP_LIMIT)
+boxplot(acc$FATALS)
+boxplot(acc$DRUNK_DR)
+
+
+#b
+acc_pca <- acc %>% as.matrix() %>% scale()
+acc_res <- prcomp(acc_pca, center = FALSE,  scale. = FALSE)
+
+cscores <- acc_res$x
+df_cscores <- as_tibble(cscores)
+ggplot(df_cscores, aes(PC1, PC2)) + geom_point()
+
+euc.dist <- function(x, y) sqrt(x^2 + y^2)
+dist <- euc.dist(df_cscores$PC1, df_cscores$PC2)
+for (x in 0:5){
+  print (df_cscores[which.max(dist),])
+  dist[which.max(dist)] <- 0
+}
+
+```
+
+2. Der Datensatz `food_consumption` enthält Angaben zum relativen Verbrauch von verschiedenen Lebensmitteln für 16 europäische Länder. Ein Wert entspricht dem prozentualen Anteil der Bevölkerung des Landes, der dieses Produkt konsumiert.
+    a) Stellen Sie Korrelationen zwischen allen Paaren von Variablen in einer Korrelationsmatrix dar (z.B. mit `corrplot::corrplot()`). Geben Sie jeweils die 5 Paare mit dem höchsten bzw. niedrigsten Korrelationskoeffizient an (ausgeschlossen Korrelationen einer Variable mit sich selbst).
+    b) Standardisieren Sie den Datensatz. Führen Sie eine Hauptkomponentenanalyse durch. Stellen Sie die absoluten und kumulierten erklärten Varianzen der Hauptkomponenten in einem Pareto-Diagramm dar.
+    c) Führen Sie ein $k$-means Clustering mit $k=4$ auf den mit den ersten beiden Hauptkomponenten rotierten Datensatz aus. Stellen Sie die Clusterzuordnungen in einem Scatter Plot dar. Dabei sollen die x- bzw. y-Achse den ersten beiden Hauptkomponenten entsprechen.
+    d) Wenden Sie $k$-means mit $k=4$ auf den originalen Datensatz an. Vergleichen Sie die Cluster-Zuordnungen der Länder mit denen aus c). 
+
+```{r}
+library(corrr)
+library(corrplot)
+library(stats)
+food <- read.csv(str_c(dirname(getwd()), "/visualAnalytics/Data/food_consumption_VA.csv"))
+
+fo <- food %>%
+  select(-Country) %>%
+  correlate() %>% # create correlation data frame (cor_df)
+  rearrange() %>%  # rearrange by correlations
+  shave() # remove upper triangle
+
+corrplot(cor(food %>% select(-Country)), type="upper")
+
+fo[is.na(fo)]<-0
+for (i in 1:5){
+  max <- which(fo==max(unlist(fo %>% select(-rowname))), arr.ind=TRUE)
+  min <- which(fo==min(unlist(fo %>% select(-rowname))), arr.ind=TRUE)
+  print("max")
+  print(fo[max[1,1], max[1,2]])
+  print(fo[max[1],1])
+  print("min")
+  print(fo[min[1,1], min[1,2]])
+  print(fo[min[1],1])
+  
+  fo[max[1,1], max[1,2]]<-0
+  fo[min[1,1], min[1,2]]<-0
+}
+
+food_pca <- food %>% select(-Country) %>% as.matrix() %>% scale()
+food_res <- prcomp(food_pca, center = FALSE,  scale. = FALSE)
+
+cscores <- food_res$x
+df_cscores <- as_tibble(cscores)
+food_res
+
+#pareto diagram
+tibble(explained = food_res$sdev^2/sum(food_res$sdev^2)) %>%
+  mutate(no = factor(1:nrow(.))) %>%
+  mutate(cum_explained = cumsum(explained)) %>%
+  ggplot(aes(no)) +
+  geom_bar(aes(y = explained), stat = "identity") +
+  geom_line(aes(y = cum_explained, group = factor(1))) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Principal Component", y = "Variance Explained (%)")
+
+#c
+
+clust<-kmeans(df_cscores[,1:2],centers=4)
+df_cscores<-df_cscores %>% mutate(cluster = factor(clust$cluster))
+ggplot(df_cscores, aes(PC1, PC2, colour = cluster, 
+                                         fill = cluster))+
+    geom_point()
+
+#d
+clust<-kmeans(food %>% select(-Country),centers=4)
+food<-food %>% mutate(cluster = factor(clust$cluster))
+ggplot(food, aes(Tea, Jam, colour = cluster, 
+                                         fill = cluster))+
+    geom_point()
+
+
+```
+
+
+3. Gibt es prädiktive Faktoren für Seitensprünge während der Ehe? In Tabelle 2 werden abgeleite Variablen von einer Umfrage im Rahmen einer psychologischen Studie zum Thema "außereheliche Affären" angezeigt. 
+    a) Stellen Sie Korrelationen zwischen allen Paaren von Variablen in einer Korrelationsmatrix dar. Welche Paare von Variablen weisen einen hohen bzw. negativen linearen Zusammenhang auf?
+    b) Führen Sie eine Hauptkomponentenanalyse (ohne `affairs`) durch. Stellen Sie die ersten beiden Hauptkomponenten, die rotierten Punkte, sowie die Vektoren der originalen Variablen in einem Biplot dar. Interpretieren Sie die Richtungen der Vektoren.
+    c) Lernen Sie ein Random-Forest-Klassifikationsmodell auf den mit den ersten drei Hauptkomponenten rotierten Datensatz und `affairs` als Zielvariable. Evaluieren Sie das Modell per 70:30%-Split-Validierung bezüglich Sensitivität und Spezifität, wobei `affairs=yes` die positive Klasse darstellen soll.
+    d) Lernen Sie ein Random-Forest-Klassifikationsmodell mit dem originalen, nicht-transformierten Datensatz. Evaluieren Sie das Modell mit derselben Aufteilung in Trainings- und Testmenge wie in c) und vergleichen Sie die Unterschiede.
+    
+
+Table: Beschreibung der Variablen des "Affären"-Datensatzes
+
+| Variable          | Beschreibung                                                                      |  
+|:------------------|:----------------------------------------------------------------------------------|
+| `affairs`         | Seitensprung im vergangenen Jahr? (`yes`/`no`)                                    |
+| `gender`          | Geschlecht (`1` = weiblich, `2` = männlich)                                       |
+| `age`             | Alter in Jahren                                                                   |
+| `yearsmarried`    | Ehedauer in Jahren                                                                |
+| `children`        | Mindestens 1 eheliches Kind                                                       |
+| `religiousness`   | Religiösität (`1`-`5`; `1`: Atheist; `5`: Sehr gläubig)                           |
+| `education`       | Anzahl der Schul-, Ausbildungs- bzw. Studienjahre                                 |
+| `occupation`      | Berufsklassifikation                                                              |
+| `rating`          | Selbsteinschätzung der Ehe (`1`-`5`; `1`: Sehr unglücklich; `5`: Sehr glücklich)  |
+
+```{r}
+library(stringr)
+library(corrr)
+library(ggbiplot)
+library(randomForest)
+library(purrr)
+library(rpart)
+library(caret)
+
+aff <- read.csv(str_c(dirname(getwd()), "/visualAnalytics/Data/affairs.csv"))
+#a
+cm <- aff %>% 
+  select(-affairs) %>%
+  correlate() %>% # create correlation data frame (cor_df)
+  rearrange() %>%  # rearrange by correlations
+  shave() # remove upper triangle
+cm
+
+#b
+aff_pca <- aff %>% select(-affairs) %>% as.matrix() %>% scale()
+aff_res <- prcomp(aff_pca, center = FALSE,  scale. = FALSE)
+aff_res
+
+
+
+ggbiplot(aff_res, varname.size = 5
+         ) + 
+  coord_cartesian(xlim = c(-2.5,2))
+
+#c
+
+cscores <- aff_res$x
+df_cscores <- as_tibble(cscores)
+
+df_cscores<-cbind(df_cscores,aff$affairs)
+
+
+set.seed(123)
+inTrain <- sample(c(FALSE, TRUE), size = nrow(df_cscores), replace = TRUE, prob = c(.3, .7))
+aff_df <- map_df(df_cscores, ~if(is.character(.)){factor(.)}else{.}) 
+
+aff_train <- aff_df %>% select(PC1, PC2, PC3,`aff$affairs` )  %>% filter(inTrain)
+aff_test <- aff_df %>%  select(PC1, PC2, PC3, `aff$affairs`)  %>% filter(!inTrain)
+
+fit <- rpart(`aff$affairs`~ ., data = aff_train)
+
+p <- predict(fit, aff_test , type = "class")
+
+
+cm <- confusionMatrix(aff_test$`aff$affairs`, p, dnn = c("True Label", "Predicted Label"), positive = "yes")
+cm
+
+#d
+set.seed(123)
+inTrain <- sample(c(FALSE, TRUE), size = nrow(aff), replace = TRUE, prob = c(.3, .7))
+aff_2 <- map_df(aff, ~if(is.character(.)){factor(.)}else{.}) 
+
+aff_train_2 <- aff_2 %>% filter(inTrain)
+aff_test_2 <- aff_2 %>% filter(!inTrain)
+
+fit <- rpart(affairs ~ ., data = aff_train_2)
+
+p <- predict(fit, aff_test_2 %>% select(-affairs) , type = "class")
+
+cm <- confusionMatrix(aff_test_2$affairs, p, dnn = c("True Label", "Predicted Label"), positive = "yes")
+cm
+
+```
+
+------
+Datensätze:
+
+- Aufgabe 1: http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/accidents_VA.csv    
+(adaptiert von https://wiki.csc.calpoly.edu/datasets/wiki/HighwayAccidents)
+- Aufgabe 2: http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/food_consumption_VA.csv   
+(adaptiert von http://openmv.net/info/food-consumption)
+- Aufgabe 3: http://isgwww.cs.uni-magdeburg.de/cv/lehre/VisAnalytics/material/exercise/datasets/affairs.csv
+(adaptiert von `data('Affairs')` aus dem Package `AER`)
+

@@ -1,22 +1,22 @@
-\contentsline {section}{\numberline {1}Introduction}{2}{section.1}
-\contentsline {section}{\numberline {2}Clustering}{3}{section.2}
-\contentsline {subsection}{\numberline {2.1}Clustering Methods}{3}{subsection.2.1}
-\contentsline {subsection}{\numberline {2.2}Summary}{5}{subsection.2.2}
-\contentsline {section}{\numberline {3}Subspace Clustering}{6}{section.3}
-\contentsline {subsection}{\numberline {3.1}Strategies for subspace search and clustering}{6}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2} Methods for subspace search and clustering}{6}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3} Visualization of Clustering Results}{7}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4} Evaluation}{7}{subsection.3.4}
-\contentsline {section}{\numberline {4}Clustering Validation}{7}{section.4}
-\contentsline {subsection}{\numberline {4.1}Validation of Clustering Results}{7}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Introduction}{8}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Visualization of Clustering Results}{8}{subsection.4.3}
-\contentsline {section}{\numberline {5}BiClusters}{8}{section.5}
-\contentsline {section}{\numberline {6}Scatter plots}{8}{section.6}
-\contentsline {section}{\numberline {7}Dimension Reduction}{8}{section.7}
-\contentsline {section}{\numberline {8}Association Rule Mining}{8}{section.8}
-\contentsline {section}{\numberline {9}Decision Trees}{8}{section.9}
-\contentsline {section}{\numberline {10}Regression Based Analysis}{8}{section.10}
-\contentsline {section}{\numberline {11}Temporal Event Sequences}{8}{section.11}
-\contentsline {section}{\numberline {12}Visual Analytics Healthcare}{8}{section.12}
-\contentsline {section}{\numberline {13}Interactive cooperative Visual Analytics}{8}{section.13}
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}
+\contentsline {section}{\numberline {2}Clustering}{4}{section.2}
+\contentsline {subsection}{\numberline {2.1}Clustering Methods}{4}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Summary}{6}{subsection.2.2}
+\contentsline {section}{\numberline {3}Subspace Clustering}{7}{section.3}
+\contentsline {subsection}{\numberline {3.1}Strategies for subspace search and clustering}{7}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2} Methods for subspace search and clustering}{7}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3} Visualization of Clustering Results}{8}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4} Evaluation}{8}{subsection.3.4}
+\contentsline {section}{\numberline {4}Clustering Validation}{8}{section.4}
+\contentsline {subsection}{\numberline {4.1}Validation of Clustering Results}{8}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Introduction}{9}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Visualization of Clustering Results}{9}{subsection.4.3}
+\contentsline {section}{\numberline {5}BiClusters}{9}{section.5}
+\contentsline {section}{\numberline {6}Scatter plots}{9}{section.6}
+\contentsline {section}{\numberline {7}Dimension Reduction}{9}{section.7}
+\contentsline {section}{\numberline {8}Association Rule Mining}{9}{section.8}
+\contentsline {section}{\numberline {9}Decision Trees}{9}{section.9}
+\contentsline {section}{\numberline {10}Regression Based Analysis}{9}{section.10}
+\contentsline {section}{\numberline {11}Temporal Event Sequences}{9}{section.11}
+\contentsline {section}{\numberline {12}Visual Analytics Healthcare}{9}{section.12}
+\contentsline {section}{\numberline {13}Interactive cooperative Visual Analytics}{9}{section.13}
